@@ -1,0 +1,192 @@
+{
+  "dataset_name": "temp_temp_heart.csv",
+  "schema_analysis": {
+    "schema": "StructType([StructField('age', IntegerType(), True), StructField('sex', IntegerType(), True), StructField('cp', IntegerType(), True), StructField('trestbps', IntegerType(), True), StructField('chol', IntegerType(), True), StructField('fbs', IntegerType(), True), StructField('restecg', IntegerType(), True), StructField('thalach', IntegerType(), True), StructField('exang', IntegerType(), True), StructField('oldpeak', DoubleType(), True), StructField('slope', IntegerType(), True), StructField('ca', IntegerType(), True), StructField('thal', IntegerType(), True), StructField('target', IntegerType(), True)])",
+    "column_names": [
+      "age",
+      "sex",
+      "cp",
+      "trestbps",
+      "chol",
+      "fbs",
+      "restecg",
+      "thalach",
+      "exang",
+      "oldpeak",
+      "slope",
+      "ca",
+      "thal",
+      "target"
+    ],
+    "column_types": {
+      "age": "IntegerType()",
+      "sex": "IntegerType()",
+      "cp": "IntegerType()",
+      "trestbps": "IntegerType()",
+      "chol": "IntegerType()",
+      "fbs": "IntegerType()",
+      "restecg": "IntegerType()",
+      "thalach": "IntegerType()",
+      "exang": "IntegerType()",
+      "oldpeak": "DoubleType()",
+      "slope": "IntegerType()",
+      "ca": "IntegerType()",
+      "thal": "IntegerType()",
+      "target": "IntegerType()"
+    },
+    "column_statistics": {
+      "age": {
+        "type": "IntegerType()",
+        "min": 29,
+        "max": 77,
+        "avg": 54.489,
+        "stddev": 9.101247810696716,
+        "null_count": 0,
+        "unique_values": 41
+      },
+      "sex": {
+        "type": "IntegerType()",
+        "min": 0,
+        "max": 1,
+        "avg": 0.692,
+        "stddev": 0.4618975528722246,
+        "null_count": 0,
+        "unique_values": 2
+      },
+      "cp": {
+        "type": "IntegerType()",
+        "min": 0,
+        "max": 3,
+        "avg": 0.95,
+        "stddev": 1.0298352103907498,
+        "null_count": 0,
+        "unique_values": 4
+      },
+      "trestbps": {
+        "type": "IntegerType()",
+        "min": 94,
+        "max": 200,
+        "avg": 131.781,
+        "stddev": 17.57463817285883,
+        "null_count": 0,
+        "unique_values": 49
+      },
+      "chol": {
+        "type": "IntegerType()",
+        "min": 126,
+        "max": 564,
+        "avg": 246.185,
+        "stddev": 51.71091561550415,
+        "null_count": 0,
+        "unique_values": 152
+      },
+      "fbs": {
+        "type": "IntegerType()",
+        "min": 0,
+        "max": 1,
+        "avg": 0.15,
+        "stddev": 0.3572500911513217,
+        "null_count": 0,
+        "unique_values": 2
+      },
+      "restecg": {
+        "type": "IntegerType()",
+        "min": 0,
+        "max": 2,
+        "avg": 0.528,
+        "stddev": 0.5248728336382931,
+        "null_count": 0,
+        "unique_values": 3
+      },
+      "thalach": {
+        "type": "IntegerType()",
+        "min": 71,
+        "max": 202,
+        "avg": 149.089,
+        "stddev": 23.027969219329055,
+        "null_count": 0,
+        "unique_values": 91
+      },
+      "exang": {
+        "type": "IntegerType()",
+        "min": 0,
+        "max": 1,
+        "avg": 0.337,
+        "stddev": 0.4729214043101183,
+        "null_count": 0,
+        "unique_values": 2
+      },
+      "oldpeak": {
+        "type": "DoubleType()",
+        "min": 0.0,
+        "max": 6.2,
+        "avg": 1.0722000000000012,
+        "stddev": 1.1763209132251675,
+        "null_count": 0,
+        "unique_values": 40
+      },
+      "slope": {
+        "type": "IntegerType()",
+        "min": 0,
+        "max": 2,
+        "avg": 1.384,
+        "stddev": 0.6171911575232789,
+        "null_count": 0,
+        "unique_values": 3
+      },
+      "ca": {
+        "type": "IntegerType()",
+        "min": 0,
+        "max": 4,
+        "avg": 0.753,
+        "stddev": 1.0310451270696424,
+        "null_count": 0,
+        "unique_values": 5
+      },
+      "thal": {
+        "type": "IntegerType()",
+        "min": 0,
+        "max": 3,
+        "avg": 2.323,
+        "stddev": 0.6205288519126704,
+        "null_count": 0,
+        "unique_values": 4
+      },
+      "target": {
+        "type": "IntegerType()",
+        "min": 0,
+        "max": 1,
+        "avg": 0.515,
+        "stddev": 0.5000250243988043,
+        "null_count": 0,
+        "unique_values": 2
+      }
+    }
+  },
+  "sample_data": "   age  sex  cp  trestbps  chol  fbs  restecg  thalach  exang  oldpeak  slope  ca  thal  target\n0   52    1   0       125   212    0        1      168      0      1.0      2   2     3       0\n1   53    1   0       140   203    1        0      155      1      3.1      0   0     3       0\n2   70    1   0       145   174    0        1      125      1      2.6      0   0     3       0\n3   61    1   0       148   203    0        1      161      0      0.0      2   1     3       0\n4   62    0   0       138   294    1        1      106      0      1.9      1   3     2       0\n5   58    0   0       100   248    0        0      122      0      1.0      1   0     2       1\n6   58    1   0       114   318    0        2      140      0      4.4      0   3     1       0\n7   55    1   0       160   289    0        0      145      1      0.8      1   1     3       0\n8   46    1   0       120   249    0        0      144      0      0.8      2   0     3       0\n9   54    1   0       122   286    0        0      116      1      3.2      1   2     2       0",
+  "descriptions": {
+    "business_description": "Business description generated by the agent.",
+    "technical_description": "Technical description generated by the agent.",
+    "data_characteristics": "Data characteristics generated by the agent."
+  },
+  "total_records": 1000,
+  "data_quality": {
+    "null_counts": {
+      "age": 0,
+      "sex": 0,
+      "cp": 0,
+      "trestbps": 0,
+      "chol": 0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 0,
+      "exang": 0,
+      "oldpeak": 0,
+      "slope": 0,
+      "ca": 0,
+      "thal": 0,
+      "target": 0
+    },
+    "duplicate_records": 698
+  }
+}
