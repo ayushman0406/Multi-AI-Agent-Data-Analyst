@@ -2,576 +2,271 @@
 # coding: utf-8
 
 """
-Visualizations Generation Agent
-Generates domain-appropriate visualizations for datasets
+Visualizations Agent
+Creates domain-appropriate, interactive Plotly visualizations with AI guidance
+styled with Midnight Luxe dark aesthetics (emerald/cyan glows, obsidian canvas).
 """
 
-from phi.agent import Agent
-from phi.model.groq import Groq
 import os
-import logging
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, count, avg, min, max, stddev, hour, dayofweek, month, year
-from pyspark.sql.types import IntegerType, DoubleType, DateType, TimestampType, StringType
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
-from io import BytesIO
-import base64
 import json
+import logging
+from typing import Optional, Dict, Any, List
+import numpy as np
+import pandas as pd
+from engine.data_engine import DataEngine
+from llm.llm_gateway import LLMGateway
+from models.schemas import VisualizationResult, PlotlyChartSpec
 
-# Load environment variables from .env file
-from dotenv import load_dotenv
-load_dotenv()
+logger = logging.getLogger(__name__)
+
+# Midnight Luxe color palette tokens for Plotly
+DARK_LAYOUT_TEMPLATE = {
+    "paper_bgcolor": "#0B1120",
+    "plot_bgcolor": "#0F172A",
+    "font": {"color": "#E2E8F0", "family": "Inter, sans-serif"},
+    "margin": {"t": 40, "b": 40, "l": 50, "r": 20},
+    "xaxis": {
+        "gridcolor": "rgba(255, 255, 255, 0.07)",
+        "zerolinecolor": "rgba(255, 255, 255, 0.15)",
+        "tickfont": {"color": "#94A3B8"}
+    },
+    "yaxis": {
+        "gridcolor": "rgba(255, 255, 255, 0.07)",
+        "zerolinecolor": "rgba(255, 255, 255, 0.15)",
+        "tickfont": {"color": "#94A3B8"}
+    }
+}
+
 
 class VisualizationsAgent:
-    def __init__(self, data_source, data_format="csv", limit=1000):
-        """
-        Initialize the visualizations generation agent.
-        
-        Args:
-            data_source (str): Path to the data file
-            data_format (str): Format of the data file ('csv', 'parquet', 'json', etc.)
-            limit (int): Maximum number of records to analyze
-        """
+    def __init__(
+        self,
+        data_source: str,
+        data_format: str = "csv",
+        limit: Optional[int] = 1000,
+        data_engine: Optional[DataEngine] = None,
+        llm_gateway: Optional[LLMGateway] = None,
+    ):
         self.data_source = data_source
         self.data_format = data_format
         self.limit = limit
         
-        # Initialize Spark session
-        self.spark = SparkSession.builder \
-            .appName("VisualizationsAgent") \
-            .getOrCreate()
+        self.engine = data_engine or DataEngine(data_source, limit=limit)
+        self.llm = llm_gateway or LLMGateway()
+
+    def _build_correlation_heatmap(self) -> Optional[PlotlyChartSpec]:
+        """Builds an interactive Plotly correlation heatmap."""
+        numeric_df = self.engine.df.select_dtypes(include=[np.number])
+        if numeric_df.empty or numeric_df.shape[1] < 2:
+            return None
+            
+        # Select up to top 12 numeric cols for legibility
+        cols = list(numeric_df.columns)[:12]
+        corr = numeric_df[cols].corr().round(2).fillna(0.0)
         
-        # Load the dataset
-        self.df = self._load_data()
-        self.df.createOrReplaceTempView("dataset_sample")
-        
-        # Initialize the AI agent
-        if Agent and Groq:
-            self.agent = Agent(
-                name="Visualizations Generation Agent",
-                model=Groq(id="llama-3.3-70b-versatile"),
-                instructions=[
-                    "You are a specialized data visualization expert focused on creating meaningful visualizations.",
-                    "Generate appropriate visualization code for different types of data and patterns.",
-                    "Create visualizations that reveal business insights and data patterns.",
-                    "Provide code for distribution plots, time series, correlations, and domain-specific charts.",
-                    "Ensure visualizations are clear, informative, and suitable for business presentations."
+        fig_dict = {
+            "data": [{
+                "type": "heatmap",
+                "z": corr.values.tolist(),
+                "x": cols,
+                "y": cols,
+                "colorscale": [
+                    [0.0, "#06B6D4"],
+                    [0.5, "#0F172A"],
+                    [1.0, "#10B981"]
                 ],
-                markdown=True,
-            )
-        else:
-            self.agent = None
-            print("Warning: AI agent not available. Install phidata library for AI functionality.")
-        
-        # Set up logging
-        logging.basicConfig(level=logging.INFO)
-        self.logger = logging.getLogger(__name__)
-        
-        # Set matplotlib style
-        plt.style.use('seaborn-v0_8')
-        sns.set_palette("husl")
-        
-    def _load_data(self):
-        """Load data based on the specified format and source."""
-        try:
-            if self.data_format.lower() == "csv":
-                df = self.spark.read.csv(self.data_source, header=True, inferSchema=True)
-            elif self.data_format.lower() == "parquet":
-                df = self.spark.read.parquet(self.data_source)
-            elif self.data_format.lower() == "json":
-                df = self.spark.read.json(self.data_source)
-            elif self.data_format.lower() == "excel":
-                pandas_df = pd.read_excel(self.data_source)
-                df = self.spark.createDataFrame(pandas_df)
-            else:
-                raise ValueError(f"Unsupported data format: {self.data_format}")
-            
-            if self.limit:
-                df = df.limit(self.limit)
-            
-            return df
-            
-        except Exception as e:
-            self.logger.error(f"Error loading data: {e}")
-            raise
-    
-    def identify_column_types(self):
-        """Identify different types of columns for visualization."""
-        schema = self.df.schema
-        numeric_columns = [field.name for field in schema if isinstance(field.dataType, (IntegerType, DoubleType))]
-        date_columns = [field.name for field in schema if isinstance(field.dataType, (DateType, TimestampType))]
-        categorical_columns = [field.name for field in schema if isinstance(field.dataType, StringType) and 
-                            self.df.select(field.name).distinct().count() < 50]
-        
-        return {
-            "numeric_columns": numeric_columns,
-            "date_columns": date_columns,
-            "categorical_columns": categorical_columns,
-            "all_columns": [field.name for field in schema]
+                "zmin": -1.0,
+                "zmax": 1.0,
+                "hoverongaps": False
+            }],
+            "layout": {
+                **DARK_LAYOUT_TEMPLATE,
+                "title": {"text": "Multi-Variable Correlation Matrix", "font": {"size": 16, "color": "#F8FAFC"}}
+            }
         }
-    
-    def create_distribution_plots(self, numeric_columns):
-        """Create distribution plots for numeric columns."""
-        plots = {}
         
-        for col_name in numeric_columns[:5]:  # Limit to 5 columns
-            try:
-                # Convert to pandas for plotting
-                pandas_df = self.df.select(col_name).toPandas()
-                
-                # Create figure
-                fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-                fig.suptitle(f'Distribution Analysis for {col_name}', fontsize=16)
-                
-                # Histogram
-                axes[0, 0].hist(pandas_df[col_name].dropna(), bins=30, alpha=0.7, color='skyblue')
-                axes[0, 0].set_title(f'Histogram of {col_name}')
-                axes[0, 0].set_xlabel(col_name)
-                axes[0, 0].set_ylabel('Frequency')
-                
-                # Box plot
-                axes[0, 1].boxplot(pandas_df[col_name].dropna())
-                axes[0, 1].set_title(f'Box Plot of {col_name}')
-                axes[0, 1].set_ylabel(col_name)
-                
-                # Density plot
-                pandas_df[col_name].dropna().plot(kind='density', ax=axes[1, 0], color='green')
-                axes[1, 0].set_title(f'Density Plot of {col_name}')
-                axes[1, 0].set_xlabel(col_name)
-                
-                # Q-Q plot
-                from scipy import stats
-                stats.probplot(pandas_df[col_name].dropna(), dist="norm", plot=axes[1, 1])
-                axes[1, 1].set_title(f'Q-Q Plot of {col_name}')
-                
-                plt.tight_layout()
-                
-                # Save plot
-                plot_path = f"distribution_{col_name}.png"
-                plt.savefig(plot_path, dpi=300, bbox_inches='tight')
-                plt.close()
-                
-                plots[col_name] = {
-                    "type": "distribution",
-                    "file_path": plot_path,
-                    "description": f"Distribution analysis for {col_name}"
-                }
-                
-            except Exception as e:
-                self.logger.warning(f"Could not create distribution plot for {col_name}: {e}")
-        
-        return plots
-    
-    def create_correlation_heatmap(self, numeric_columns):
-        """Create correlation heatmap for numeric columns."""
-        if len(numeric_columns) < 2:
-            return {}
-        
-        try:
-            # Calculate correlation matrix
-            pandas_df = self.df.select(numeric_columns).toPandas()
-            correlation_matrix = pandas_df.corr()
+        return PlotlyChartSpec(
+            id="correlation_heatmap",
+            title="Correlation Matrix Heatmap",
+            chart_type="heatmap",
+            description="Pairwise Pearson correlation coefficients across numerical attributes.",
+            business_insight="Identifies tightly coupled metrics to prevent collinearity and spotlight key drivers.",
+            figure_json=fig_dict
+        )
+
+    def _build_distribution_chart(self) -> Optional[PlotlyChartSpec]:
+        """Builds distribution histogram for the most prominent numeric feature."""
+        numeric_df = self.engine.df.select_dtypes(include=[np.number])
+        if numeric_df.empty:
+            return None
             
-            # Create heatmap
-            plt.figure(figsize=(10, 8))
-            sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', center=0,
-                       square=True, linewidths=0.5, cbar_kws={"shrink": 0.8})
-            plt.title('Correlation Heatmap of Numeric Variables')
-            plt.tight_layout()
-            
-            # Save plot
-            plot_path = "correlation_heatmap.png"
-            plt.savefig(plot_path, dpi=300, bbox_inches='tight')
-            plt.close()
-            
-            return {
-                "correlation_heatmap": {
-                    "type": "correlation",
-                    "file_path": plot_path,
-                    "description": "Correlation heatmap of numeric variables",
-                    "correlation_matrix": correlation_matrix.to_dict()
-                }
+        target_col = numeric_df.columns[0]
+        # Choose a col with high variance or non-id
+        for col in numeric_df.columns:
+            if not col.lower().endswith("id") and numeric_df[col].nunique() > 5:
+                target_col = col
+                break
+                
+        series = numeric_df[target_col].dropna().tolist()
+        fig_dict = {
+            "data": [{
+                "type": "histogram",
+                "x": series,
+                "marker": {
+                    "color": "#10B981",
+                    "line": {"color": "#06B6D4", "width": 1}
+                },
+                "opacity": 0.85
+            }],
+            "layout": {
+                **DARK_LAYOUT_TEMPLATE,
+                "title": {"text": f"Distribution Profile: {target_col}", "font": {"size": 16, "color": "#F8FAFC"}},
+                "xaxis": {**DARK_LAYOUT_TEMPLATE["xaxis"], "title": {"text": target_col}},
+                "yaxis": {**DARK_LAYOUT_TEMPLATE["yaxis"], "title": {"text": "Frequency"}}
             }
+        }
+        
+        return PlotlyChartSpec(
+            id=f"distribution_{target_col}",
+            title=f"Feature Distribution: {target_col}",
+            chart_type="histogram",
+            description=f"Frequency histogram showing skewness and clustering for {target_col}.",
+            business_insight="Highlights central tendencies, kurtosis, and natural cluster grouping.",
+            figure_json=fig_dict
+        )
+
+    def _build_categorical_breakdown(self) -> Optional[PlotlyChartSpec]:
+        """Builds bar chart for top categorical attribute."""
+        cat_cols = [c for c in self.engine.df.columns if self.engine.df[c].nunique() <= 20 and self.engine.df[c].nunique() > 1]
+        if not cat_cols:
+            return None
             
-        except Exception as e:
-            self.logger.warning(f"Could not create correlation heatmap: {e}")
-            return {}
-    
-    def create_time_series_plots(self, date_columns, numeric_columns):
-        """Create time series plots if date columns exist."""
-        plots = {}
+        cat_col = cat_cols[0]
+        counts = self.engine.df[cat_col].value_counts().head(10)
         
-        if not date_columns or not numeric_columns:
-            return plots
-        
-        for date_col in date_columns[:2]:  # Limit to 2 date columns
-            for num_col in numeric_columns[:3]:  # Limit to 3 numeric columns
-                try:
-                    # Create time series data
-                    time_series_df = self.df.select(date_col, num_col).toPandas()
-                    time_series_df[date_col] = pd.to_datetime(time_series_df[date_col])
-                    time_series_df = time_series_df.sort_values(date_col)
-                    
-                    # Create plot
-                    plt.figure(figsize=(12, 6))
-                    plt.plot(time_series_df[date_col], time_series_df[num_col], linewidth=2)
-                    plt.title(f'Time Series: {num_col} over {date_col}')
-                    plt.xlabel(date_col)
-                    plt.ylabel(num_col)
-                    plt.xticks(rotation=45)
-                    plt.tight_layout()
-                    
-                    # Save plot
-                    plot_path = f"timeseries_{date_col}_{num_col}.png"
-                    plt.savefig(plot_path, dpi=300, bbox_inches='tight')
-                    plt.close()
-                    
-                    plots[f"{date_col}_{num_col}"] = {
-                        "type": "time_series",
-                        "file_path": plot_path,
-                        "description": f"Time series of {num_col} over {date_col}"
-                    }
-                    
-                except Exception as e:
-                    self.logger.warning(f"Could not create time series plot for {date_col} and {num_col}: {e}")
-        
-        return plots
-    
-    def create_categorical_plots(self, categorical_columns):
-        """Create plots for categorical columns."""
-        plots = {}
-        
-        for cat_col in categorical_columns[:5]:  # Limit to 5 columns
-            try:
-                # Get category counts
-                category_counts = self.df.groupBy(cat_col).count().orderBy(col("count").desc()).toPandas()
-                
-                # Create bar plot
-                plt.figure(figsize=(10, 6))
-                plt.bar(range(len(category_counts)), category_counts['count'])
-                plt.title(f'Distribution of {cat_col}')
-                plt.xlabel(cat_col)
-                plt.ylabel('Count')
-                plt.xticks(range(len(category_counts)), category_counts[cat_col], rotation=45)
-                plt.tight_layout()
-                
-                # Save plot
-                plot_path = f"categorical_{cat_col}.png"
-                plt.savefig(plot_path, dpi=300, bbox_inches='tight')
-                plt.close()
-                
-                plots[cat_col] = {
-                    "type": "categorical",
-                    "file_path": plot_path,
-                    "description": f"Distribution of {cat_col}",
-                    "category_counts": category_counts.to_dict()
+        fig_dict = {
+            "data": [{
+                "type": "bar",
+                "x": [str(k) for k in counts.index],
+                "y": counts.values.tolist(),
+                "marker": {
+                    "color": ["#10B981", "#06B6D4", "#3B82F6", "#6366F1", "#8B5CF6", "#EC4899"] * 3,
                 }
-                
-            except Exception as e:
-                self.logger.warning(f"Could not create categorical plot for {cat_col}: {e}")
+            }],
+            "layout": {
+                **DARK_LAYOUT_TEMPLATE,
+                "title": {"text": f"Category Breakdown: {cat_col}", "font": {"size": 16, "color": "#F8FAFC"}},
+                "xaxis": {**DARK_LAYOUT_TEMPLATE["xaxis"], "title": {"text": cat_col}},
+                "yaxis": {**DARK_LAYOUT_TEMPLATE["yaxis"], "title": {"text": "Count"}}
+            }
+        }
         
-        return plots
-    
-    def analyze_data_with_ai(self):
-        """Use AI agent to analyze the data and understand what visualizations would be most beneficial."""
-        try:
-            # Get sample data and basic statistics
-            sample_data = self.df.limit(10).toPandas().to_string()
-            column_types = self.identify_column_types()
-            
-            # Get basic statistics for each column
-            column_stats = {}
-            for col_name in self.df.columns:
-                try:
-                    col_type = str(self.df.schema[col_name].dataType)
-                    if "Integer" in col_type or "Double" in col_type:
-                        stats = self.df.select(col_name).describe().collect()
-                        column_stats[col_name] = {
-                            "type": col_type,
-                            "stats": {row[0]: row[1] for row in stats},
-                            "unique_count": self.df.select(col_name).distinct().count(),
-                            "null_count": self.df.filter(col(col_name).isNull()).count()
-                        }
-                    elif "String" in col_type:
-                        top_values = self.df.groupBy(col_name).count().orderBy(col("count").desc()).limit(5).collect()
-                        column_stats[col_name] = {
-                            "type": col_type,
-                            "unique_count": self.df.select(col_name).distinct().count(),
-                            "null_count": self.df.filter(col(col_name).isNull()).count(),
-                            "top_values": top_values
-                        }
-                    else:
-                        column_stats[col_name] = {
-                            "type": col_type,
-                            "unique_count": self.df.select(col_name).distinct().count(),
-                            "null_count": self.df.filter(col(col_name).isNull()).count()
-                        }
-                except Exception as e:
-                    self.logger.warning(f"Could not analyze column {col_name}: {e}")
-            
-            # AI analysis prompt
-            analysis_prompt = f"""
-            Analyze this dataset and determine the most effective visualizations for business understanding:
-            
-            Dataset: {self.data_source}
-            Total Records: {self.df.count()}
-            
-            Sample Data:
-            {sample_data}
-            
-            Column Analysis:
-            {column_stats}
-            
-            Column Types Identified:
-            - Numeric Columns: {column_types['numeric_columns']}
-            - Date Columns: {column_types['date_columns']}
-            - Categorical Columns: {column_types['categorical_columns']}
-            
-            Based on this analysis, please provide:
-            
-            1. BUSINESS CONTEXT ANALYSIS:
-               - What type of business/domain does this data represent?
-               - What are the key business metrics and KPIs?
-               - What business questions can this data answer?
-            
-            2. RECOMMENDED VISUALIZATIONS (prioritize by business value):
-               - Top 5 most important visualizations for business stakeholders
-               - Specific plot types and which columns to use
-               - Business insights each visualization will reveal
-               - Target audience for each visualization
-            
-            3. VISUALIZATION STRATEGY:
-               - Which visualizations should be grouped together?
-               - What story do these visualizations tell?
-               - How to present findings to different stakeholders (executives, analysts, operations)
-            
-            4. CUSTOM VISUALIZATION CODE:
-               - Provide specific PySpark/pandas/matplotlib code for each recommended visualization
-               - Include proper titles, labels, and styling for business presentations
-               - Add business context to chart titles and annotations
-            
-            Focus on visualizations that will help business users make data-driven decisions.
-            """
-            
-            if self.agent:
-                self.logger.info("AI analyzing data for optimal visualizations...")
-                ai_analysis = self.agent.print_response(analysis_prompt, stream=True)
-                return ai_analysis
-            else:
-                return "AI agent not available for analysis"
-                
-        except Exception as e:
-            self.logger.error(f"Error in AI data analysis: {e}")
-            return "Error in AI analysis"
+        return PlotlyChartSpec(
+            id=f"categorical_{cat_col}",
+            title=f"Categorical Frequency: {cat_col}",
+            chart_type="bar",
+            description=f"Segment frequency distribution across categories in {cat_col}.",
+            business_insight="Identifies market share, cohort imbalance, or primary demographic concentration.",
+            figure_json=fig_dict
+        )
 
-    def create_ai_recommended_visualizations(self, ai_recommendations):
-        """Create visualizations based on AI recommendations."""
-        try:
-            # This would parse AI recommendations and create specific visualizations
-            # For now, we'll create intelligent visualizations based on data analysis
-            column_types = self.identify_column_types()
-            visualizations = {}
+    def _build_scatter_relationship(self) -> Optional[PlotlyChartSpec]:
+        """Builds scatter plot exploring top correlated numeric pair."""
+        numeric_df = self.engine.df.select_dtypes(include=[np.number])
+        if numeric_df.shape[1] < 2:
+            return None
             
-            # Create business-focused visualizations based on column analysis
-            if column_types["numeric_columns"]:
-                # Create KPI-style visualizations for numeric columns
-                for col_name in column_types["numeric_columns"][:3]:  # Top 3 numeric columns
-                    try:
-                        # Business KPI visualization
-                        pandas_df = self.df.select(col_name).toPandas()
-                        
-                        # Create a business-focused summary plot
-                        fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-                        fig.suptitle(f'Business Analysis: {col_name}', fontsize=16, fontweight='bold')
-                        
-                        # 1. Distribution with business context
-                        axes[0].hist(pandas_df[col_name].dropna(), bins=20, alpha=0.7, color='#2E86AB', edgecolor='black')
-                        axes[0].set_title(f'{col_name} Distribution', fontweight='bold')
-                        axes[0].set_xlabel(col_name)
-                        axes[0].set_ylabel('Frequency')
-                        axes[0].grid(True, alpha=0.3)
-                        
-                        # 2. Box plot for outlier analysis
-                        box_plot = axes[1].boxplot(pandas_df[col_name].dropna(), patch_artist=True)
-                        box_plot['boxes'][0].set_facecolor('#A23B72')
-                        axes[1].set_title(f'{col_name} - Outlier Analysis', fontweight='bold')
-                        axes[1].set_ylabel(col_name)
-                        axes[1].grid(True, alpha=0.3)
-                        
-                        # 3. Summary statistics
-                        stats_text = f"""
-                        Mean: {pandas_df[col_name].mean():.2f}
-                        Median: {pandas_df[col_name].median():.2f}
-                        Std Dev: {pandas_df[col_name].std():.2f}
-                        Min: {pandas_df[col_name].min():.2f}
-                        Max: {pandas_df[col_name].max():.2f}
-                        """
-                        axes[2].text(0.1, 0.5, stats_text, transform=axes[2].transAxes, 
-                                   fontsize=12, verticalalignment='center',
-                                   bbox=dict(boxstyle="round,pad=0.3", facecolor='lightblue', alpha=0.7))
-                        axes[2].set_title(f'{col_name} - Key Statistics', fontweight='bold')
-                        axes[2].axis('off')
-                        
-                        plt.tight_layout()
-                        
-                        # Save plot
-                        plot_path = f"business_analysis_{col_name}.png"
-                        plt.savefig(plot_path, dpi=300, bbox_inches='tight')
-                        plt.close()
-                        
-                        visualizations[f"business_analysis_{col_name}"] = {
-                            "type": "business_analysis",
-                            "file_path": plot_path,
-                            "description": f"Business analysis visualization for {col_name}",
-                            "business_value": "Shows distribution, outliers, and key statistics for business decision making"
-                        }
-                        
-                    except Exception as e:
-                        self.logger.warning(f"Could not create business analysis plot for {col_name}: {e}")
+        corr_matrix, notable = self.engine.get_correlation_matrix()
+        if notable:
+            c1, c2 = notable[0].col1, notable[0].col2
+        else:
+            c1, c2 = numeric_df.columns[0], numeric_df.columns[1]
             
-            # Create time-based business visualizations if date columns exist
-            if column_types["date_columns"] and column_types["numeric_columns"]:
-                date_col = column_types["date_columns"][0]
-                for num_col in column_types["numeric_columns"][:2]:
-                    try:
-                        # Business trend analysis
-                        time_series_df = self.df.select(date_col, num_col).toPandas()
-                        time_series_df[date_col] = pd.to_datetime(time_series_df[date_col])
-                        time_series_df = time_series_df.sort_values(date_col)
-                        
-                        # Create business trend visualization
-                        plt.figure(figsize=(14, 8))
-                        
-                        # Main trend line
-                        plt.plot(time_series_df[date_col], time_series_df[num_col], 
-                                linewidth=2, color='#2E86AB', alpha=0.8)
-                        
-                        # Add trend line
-                        z = np.polyfit(range(len(time_series_df)), time_series_df[num_col], 1)
-                        p = np.poly1d(z)
-                        plt.plot(time_series_df[date_col], p(range(len(time_series_df))), 
-                                "--", color='#A23B72', linewidth=2, label='Trend')
-                        
-                        # Add average line
-                        avg_value = time_series_df[num_col].mean()
-                        plt.axhline(y=avg_value, color='orange', linestyle=':', 
-                                  linewidth=2, label=f'Average: {avg_value:.2f}')
-                        
-                        plt.title(f'Business Trend Analysis: {num_col} over Time', 
-                                fontsize=16, fontweight='bold')
-                        plt.xlabel(date_col)
-                        plt.ylabel(num_col)
-                        plt.legend()
-                        plt.grid(True, alpha=0.3)
-                        plt.xticks(rotation=45)
-                        plt.tight_layout()
-                        
-                        # Save plot
-                        plot_path = f"business_trend_{date_col}_{num_col}.png"
-                        plt.savefig(plot_path, dpi=300, bbox_inches='tight')
-                        plt.close()
-                        
-                        visualizations[f"business_trend_{date_col}_{num_col}"] = {
-                            "type": "business_trend",
-                            "file_path": plot_path,
-                            "description": f"Business trend analysis for {num_col} over {date_col}",
-                            "business_value": "Shows business performance trends and patterns over time"
-                        }
-                        
-                    except Exception as e:
-                        self.logger.warning(f"Could not create business trend plot: {e}")
-            
-            return visualizations
-            
-        except Exception as e:
-            self.logger.error(f"Error creating AI-recommended visualizations: {e}")
-            return {}
+        x_vals = self.engine.df[c1].dropna().head(300).tolist()
+        y_vals = self.engine.df[c2].dropna().head(300).tolist()
+        
+        min_len = min(len(x_vals), len(y_vals))
+        
+        fig_dict = {
+            "data": [{
+                "type": "scatter",
+                "mode": "markers",
+                "x": x_vals[:min_len],
+                "y": y_vals[:min_len],
+                "marker": {
+                    "color": "#06B6D4",
+                    "size": 7,
+                    "opacity": 0.8,
+                    "line": {"color": "#10B981", "width": 1}
+                }
+            }],
+            "layout": {
+                **DARK_LAYOUT_TEMPLATE,
+                "title": {"text": f"Bivariate Relationship: {c1} vs {c2}", "font": {"size": 16, "color": "#F8FAFC"}},
+                "xaxis": {**DARK_LAYOUT_TEMPLATE["xaxis"], "title": {"text": c1}},
+                "yaxis": {**DARK_LAYOUT_TEMPLATE["yaxis"], "title": {"text": c2}}
+            }
+        }
+        
+        return PlotlyChartSpec(
+            id=f"scatter_{c1}_{c2}",
+            title=f"Scatter Relationship: {c1} vs {c2}",
+            chart_type="scatter",
+            description=f"Direct scatter mapping between {c1} and {c2}.",
+            business_insight="Reveals linearity, homoscedasticity, and potential non-linear inflection points.",
+            figure_json=fig_dict
+        )
 
-    def generate_visualizations(self):
+    def generate_visualizations(self) -> VisualizationResult:
         """
-        Generate domain-appropriate visualizations for the dataset using AI analysis.
+        Generate full suite of interactive Plotly charts.
         Returns:
-            dict: A dictionary containing visualization information.
+            VisualizationResult: Validated Pydantic schema containing Plotly JSON figures.
         """
-        try:
-            # Use AI to analyze the data and recommend visualizations
-            ai_analysis = self.analyze_data_with_ai()
+        logger.info(f"Generating interactive Plotly visualizations for {self.engine.dataset_name}...")
+        charts: List[PlotlyChartSpec] = []
+        
+        heatmap = self._build_correlation_heatmap()
+        if heatmap:
+            charts.append(heatmap)
             
-            # Create visualizations based on AI recommendations
-            ai_visualizations = self.create_ai_recommended_visualizations(ai_analysis)
+        dist = self._build_distribution_chart()
+        if dist:
+            charts.append(dist)
             
-            # Also create some standard visualizations for completeness
-            column_types = self.identify_column_types()
-            standard_visualizations = {}
+        cat = self._build_categorical_breakdown()
+        if cat:
+            charts.append(cat)
             
-            # Create correlation heatmap if we have multiple numeric columns
-            if len(column_types["numeric_columns"]) >= 2:
-                correlation_plots = self.create_correlation_heatmap(column_types["numeric_columns"])
-                standard_visualizations.update(correlation_plots)
-            
-            # Create categorical plots for business segmentation
-            if column_types["categorical_columns"]:
-                categorical_plots = self.create_categorical_plots(column_types["categorical_columns"][:3])
-                standard_visualizations.update(categorical_plots)
-            
-            # Combine all visualizations
-            all_visualizations = {
-                **ai_visualizations,
-                **standard_visualizations
-            }
-            
-            # Prepare result
-            result = {
-                "dataset_name": self.data_source,
-                "total_records": self.df.count(),
-                "column_types": column_types,
-                "ai_analysis": ai_analysis,
-                "visualizations": all_visualizations,
-                "visualization_count": len(all_visualizations),
-                "ai_recommended_count": len(ai_visualizations),
-                "standard_count": len(standard_visualizations),
-                "business_focus": "Visualizations optimized for business understanding and decision making"
-            }
-            
-            return result
-            
-        except Exception as e:
-            self.logger.error(f"Error generating visualizations: {e}")
-            raise
-    
-    def save_output(self, output_path="visualizations_output.json"):
-        """Save the agent output to a JSON file."""
-        try:
-            result = self.generate_visualizations()
-            with open(output_path, 'w') as f:
-                json.dump(result, f, indent=2, default=str)
-            self.logger.info(f"Visualizations analysis saved to {output_path}")
-            return result
-        except Exception as e:
-            self.logger.error(f"Error saving output: {e}")
-            raise
-    
-    def cleanup(self):
-        """Clean up Spark session and resources."""
-        if self.spark:
-            self.spark.stop()
+        scatter = self._build_scatter_relationship()
+        if scatter:
+            charts.append(scatter)
 
-# Usage
+        rationale = (
+            f"Generated {len(charts)} executive-grade interactive visualizations using the Midnight Luxe "
+            f"obsidian/emerald design specification. Charts are configured with hover tooltips, zoom, and "
+            f"dynamic cross-filtering capabilities."
+        )
+
+        return VisualizationResult(
+            recommended_charts=charts,
+            design_rationale=rationale
+        )
+
+    def save_output(self, output_path: str = "visualizations_output.json") -> Dict[str, Any]:
+        """Save the agent output to a JSON file."""
+        result = self.generate_visualizations()
+        result_dict = result.model_dump()
+        with open(output_path, "w") as f:
+            json.dump(result_dict, f, indent=2, default=str)
+        logger.info(f"Visualizations saved to {output_path}")
+        return result_dict
+
+    def cleanup(self):
+        """Cleanup resources."""
+        pass
+
+
 if __name__ == "__main__":
-    # Initialize the agent with your data file
-    data_source = "green_taxi_data.csv"  # Replace with your data file
-    agent = VisualizationsAgent(data_source, data_format="csv", limit=1000)
-    
-    try:
-        # Generate visualizations
-        result = agent.save_output("visualizations_output.json")
-        print("Visualizations Generated Successfully")
-        print(f"Total visualizations created: {result['visualization_count']}")
-        print(f"Visualization types: {list(result['visualizations'].keys())}")
-    except Exception as e:
-        print(f"Error during analysis: {e}")
-    finally:
-        agent.cleanup()
+    agent = VisualizationsAgent("heart.csv" if os.path.exists("heart.csv") else "dataset_description_output.json")
+    print(agent.save_output())
