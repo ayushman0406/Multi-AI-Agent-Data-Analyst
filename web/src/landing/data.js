@@ -21,11 +21,22 @@ export function sourceNumbers(turn) {
   return out
 }
 
-/** For each number in the answer: the first source it matches, or null. */
+/**
+ * For each number in the answer: the source value it matches under the
+ * grounding rule (two significant figures, percent <-> fraction), choosing the
+ * closest one when several match, or null.
+ */
 export function groundingTrace(turn) {
   const src = sourceNumbers(turn)
   return numbersIn(turn.answer_md).map((v) => {
-    const hit = src.find((s) => sig2(s.value) === sig2(v) || sig2(s.value * 100) === sig2(v) || sig2(s.value / 100) === sig2(v))
-    return { value: v, source: hit || null }
+    let best = null, bestErr = Infinity
+    for (const s of src) {
+      for (const k of [1, 100, 0.01]) {
+        if (sig2(s.value * k) !== sig2(v)) continue
+        const err = Math.abs(s.value * k - v) / (Math.abs(v) || 1)
+        if (err < bestErr) { bestErr = err; best = s }
+      }
+    }
+    return { value: v, source: best }
   })
 }

@@ -124,3 +124,23 @@ def test_demo(client):
     assert r.status_code == 200
     body = r.json()
     assert body["mode"] in ("offline", "llm") and body["turns"]
+
+
+def test_changing_base_url_does_not_send_server_key_elsewhere(client, monkeypatch):
+    from analyst.config import clear_overrides, get_settings
+    monkeypatch.setenv("LLM_API_KEY", "server-env-key")
+    clear_overrides()
+    try:
+        client.put("/api/settings", json={"base_url": "https://attacker.example/v1"})
+        assert get_settings().api_key == ""
+        assert client.get("/api/settings").json()["has_key"] is False
+        # supplying a key alongside the new endpoint is fine
+        client.put("/api/settings", json={"base_url": "https://attacker.example/v1", "api_key": "own-key"})
+        assert get_settings().api_key == "own-key"
+    finally:
+        clear_overrides()
+
+
+def test_runtime_settings_can_be_disabled(client, monkeypatch):
+    monkeypatch.setenv("ALLOW_RUNTIME_SETTINGS", "0")
+    assert client.put("/api/settings", json={"model": "x"}).status_code == 403

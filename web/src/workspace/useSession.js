@@ -11,7 +11,9 @@ const sleep = (ms, signal) => new Promise((res, rej) => {
 async function loadRecording() {
   try {
     const d = await api.demo()
-    if (d && d.profile) return { ...d, source: 'server' }
+    // Prefer the server's cached session only when a model wrote it; an offline
+    // cache is accurate but shows tables only, and the bundled copy explains itself.
+    if (d && d.profile && d.turns?.some((t) => t.mode === 'llm')) return { ...d, source: 'server' }
   } catch { /* fall through to bundled copy */ }
   const mod = await import('../demo/retail_demo.json')
   return { ...mod.default, source: 'bundled' }
@@ -72,7 +74,7 @@ export function useSession() {
 
   const openRecording = useCallback(async ({ autoplay = true } = {}) => {
     abortRef.current?.abort()
-    setLoadError(null); setTurns([]); setLoading('Recorded example')
+    setLoadError(null); setTurns([]); setLoading('Example session')
     const rec = await loadRecording()
     setLoading(null)
     setSession({

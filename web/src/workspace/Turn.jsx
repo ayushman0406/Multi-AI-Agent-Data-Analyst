@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { AlertTriangle, CheckCircle2, CircleDashed, Undo2 } from 'lucide-react'
 import Step from './Step.jsx'
 import { renderAnswer } from '../lib/answer.js'
-import { fmtMs } from '../lib/format.js'
+import { fmtMs, fmtNum } from '../lib/format.js'
 import { phaseText } from './turns.js'
 
 function Grounding({ turn }) {
@@ -68,7 +68,7 @@ export default function Turn({ turn, n, onAsk, disabled, canAsk = () => true, is
       <header className="turn-head">
         <p className="turn-meta eyebrow">
           <span>Question {n}</span>
-          {turn.recorded && <span className="tag-recorded">recorded</span>}
+          {turn.recorded && <span className="tag-recorded">example</span>}
           {live && <span className="turn-phase">{phaseText(turn)}</span>}
         </p>
         <h2 className="turn-q" id={`${turn.id}-q`}>{turn.question}</h2>
@@ -80,6 +80,12 @@ export default function Turn({ turn, n, onAsk, disabled, canAsk = () => true, is
           {turn.steps.length > 0 && <span className="tnum">{turn.steps.length} {turn.steps.length === 1 ? 'step' : 'steps'}</span>}
           {totalMs > 0 && !live && <span className="tnum">{fmtMs(totalMs)} in DuckDB</span>}
         </h3>
+        {(turn.dropped?.length > 0 || turn.planNote) && (
+          <p className="plan-note">
+            {turn.dropped?.length > 0 && <>{turn.dropped.length} proposed {turn.dropped.length === 1 ? 'call was' : 'calls were'} dropped before running: {turn.dropped.map((d) => d.error).filter(Boolean).join('; ')}. </>}
+            {turn.planNote}
+          </p>
+        )}
         {turn.status === 'planning' ? (
           <p className="plan-wait"><span className="spinner" aria-hidden="true" /> Choosing from the tool list…</p>
         ) : turn.steps.length ? (
@@ -104,7 +110,7 @@ export default function Turn({ turn, n, onAsk, disabled, canAsk = () => true, is
                 const s = stepOf(k, turn.steps.length)
                 return (
                   <li key={i} className="key">
-                    <span className="key-value">{String(k.value)}</span>
+                    <span className="key-value">{typeof k.value === 'number' ? fmtNum(k.value) : String(k.value)}</span>
                     <span className="key-label">{k.label}</span>
                     {s && <button type="button" className="key-step mono" onClick={() => goto(s)}>from step {s}</button>}
                   </li>

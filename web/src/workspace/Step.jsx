@@ -12,14 +12,16 @@ function StatusIcon({ status }) {
 }
 
 function Args({ args }) {
-  const entries = Object.entries(args || {})
+  const entries = Object.entries(args || {}).filter(([, v]) => v !== null && v !== undefined)
   if (!entries.length) return <p className="step-none">No arguments.</p>
   return (
     <dl className="step-args">
       {entries.map(([k, v]) => (
         <div key={k}>
           <dt>{k}</dt>
-          <dd>{k === 'filters' && Array.isArray(v)
+          <dd>{k === 'filters' && Array.isArray(v) && v.length === 0
+            ? <span className="step-none">none</span>
+            : k === 'filters' && Array.isArray(v)
             ? v.map((f, i) => <code key={i} className="filter">{f.column} {f.op} {JSON.stringify(f.value)}</code>)
             : <code>{typeof v === 'string' ? v : JSON.stringify(v)}</code>}</dd>
         </div>

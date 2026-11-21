@@ -4,6 +4,8 @@ Give it a dataset. It works out what the data is, then answers your questions by
 
 ![Workspace mid-conversation, with one analysis step expanded](docs/cover.png)
 
+The screenshot and the landing page use an example session (`web/src/demo/retail_demo.json`, built by `web/scripts/make_demo.py`). Its tool calls and numbers come from the real tools run on the retail sample. Its answer text was written by hand to show the format, and one figure in it is unsupported on purpose, so the grounding check has something to flag.
+
 ## How it works
 
 ```mermaid
@@ -46,6 +48,9 @@ The LLM client speaks the OpenAI-compatible chat API, so any compatible provider
 | `LLM_API_KEY` | falls back to `GROQ_API_KEY`, then `OPENAI_API_KEY` |
 | `LLM_BASE_URL` | `https://api.groq.com/openai/v1` |
 | `LLM_MODEL` | `openai/gpt-oss-120b` |
+| `ALLOW_RUNTIME_SETTINGS` | `1`. Set to `0` on a public deployment so visitors can't change the model or endpoint |
+
+If someone changes the base URL in the settings drawer without entering a key, the server's own key is not sent to the new host.
 
 With no key, the app runs in **offline mode**. A keyword planner picks the tools, and the answer is a plain table of tool results marked "LLM not configured". It doesn't write prose it can't back up.
 

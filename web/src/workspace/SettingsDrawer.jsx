@@ -60,7 +60,7 @@ export default function SettingsDrawer({ open, onClose, onSaved, health }) {
           <h2 id="settings-title">Model settings</h2>
           <button type="button" className="btn btn-quiet icon-btn" onClick={onClose} aria-label="Close settings"><X size={18} /></button>
         </div>
-        <p className="drawer-lede">Any OpenAI-compatible endpoint works: Groq, OpenAI, OpenRouter, Together, a local Ollama or vLLM server. These settings apply to this server process until it restarts.</p>
+        <p className="drawer-lede">Any OpenAI-compatible endpoint, for example Groq, OpenAI, OpenRouter, or a local Ollama or vLLM server. These settings apply to this server process until it restarts.</p>
         <form onSubmit={save} className="form">
           <label className="field">
             <span className="field-label">API key</span>

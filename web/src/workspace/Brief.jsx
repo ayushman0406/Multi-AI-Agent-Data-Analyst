@@ -1,19 +1,20 @@
 import { useState } from 'react'
-import { AlertTriangle, ChevronDown } from 'lucide-react'
+import { ChevronDown, CircleDot } from 'lucide-react'
 import ColumnCard from './ColumnCard.jsx'
 import { fmtInt } from '../lib/format.js'
 
-export default function Brief({ session, onAsk, disabled, canAsk = () => true, compact }) {
+export default function Brief({ session, onAsk, disabled, canAsk = () => true, compact, folded }) {
   const { profile, understanding: u, understandStatus, dataset } = session
   const [colsOpen, setColsOpen] = useState(!compact)
+  const [open, setOpen] = useState(!folded)
   const rows = profile?.row_count ?? dataset?.rows
   const cols = profile?.columns || []
   const pending = !u && understandStatus === 'streaming'
   return (
     <section className="brief" aria-labelledby="brief-title" aria-busy={pending}>
-      <p className="eyebrow">Dataset brief{u?.domain ? ` · ${u.domain}` : ''}</p>
+      <p className="eyebrow">Dataset brief{u?.domain && u.domain.toLowerCase() !== 'unknown' ? ` · ${u.domain}` : ''}</p>
       <h1 id="brief-title" className="brief-title">{u?.title || dataset?.name || 'Your dataset'}</h1>
-      <p className="brief-file mono">{dataset?.name}</p>
+      {dataset?.name && dataset.name !== (u?.title || dataset?.name) ? <p className="brief-file mono">{dataset.name}</p> : null}
 
       <dl className="brief-stats tnum">
         <div><dt>rows</dt><dd>{fmtInt(rows)}</dd></div>
@@ -21,6 +22,13 @@ export default function Brief({ session, onAsk, disabled, canAsk = () => true, c
         <div><dt>duplicate rows</dt><dd>{fmtInt(profile?.duplicate_rows ?? 0)}</dd></div>
       </dl>
 
+      {folded && (
+        <button type="button" className="btn btn-secondary brief-more" aria-expanded={open} aria-controls="brief-rest" onClick={() => setOpen((v) => !v)}>
+          {open ? 'Hide the dataset brief' : 'Show the dataset brief'}
+          <ChevronDown aria-hidden="true" size={16} className="brief-chev" />
+        </button>
+      )}
+      <div id="brief-rest" className="brief-rest" hidden={!open}>
       <div aria-live="polite">
         {pending && (
           <div className="brief-pending">
@@ -52,7 +60,7 @@ export default function Brief({ session, onAsk, disabled, canAsk = () => true, c
         <div className="brief-block">
           <h2 className="brief-h">Data quality</h2>
           <ul className="quality">
-            {u.quality_notes.map((n) => (<li key={n}><AlertTriangle aria-hidden="true" size={14} strokeWidth={1.75} /><span>{n}</span></li>))}
+            {u.quality_notes.map((n) => (<li key={n}><CircleDot aria-hidden="true" size={14} strokeWidth={1.75} /><span>{n}</span></li>))}
           </ul>
         </div>
       )}
@@ -65,6 +73,7 @@ export default function Brief({ session, onAsk, disabled, canAsk = () => true, c
         <ul id="brief-cols" className="cols" hidden={!colsOpen}>
           {cols.map((c) => <ColumnCard key={c.name} col={c} note={u?.column_notes?.[c.name]} rows={rows} />)}
         </ul>
+      </div>
       </div>
     </section>
   )

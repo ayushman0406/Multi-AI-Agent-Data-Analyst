@@ -10,7 +10,7 @@ const SEQ = ['#EEF6F1', '#0A5E40']
 const NEG = '#2A78D6', MID = '#EFEDE7', POS = '#D4571F'
 
 /** Long (x, y, value) or wide (label + numeric columns) → {xs, ys, get} */
-export function matrixFrom(rows, x, y, value) {
+export function matrixFrom(rows, x, y, value, symmetric = false) {
   const keys = Object.keys(rows[0] || {})
   if (x && y && keys.includes(x) && keys.includes(y)) {
     const v = value && keys.includes(value) ? value : firstNumericKey(rows, [x, y])
@@ -20,6 +20,12 @@ export function matrixFrom(rows, x, y, value) {
       if (!xs.includes(a)) xs.push(a)
       if (!ys.includes(b)) ys.push(b)
       m.set(a + '\u0000' + b, toNum(r[v]))
+    }
+    if (symmetric) {
+      // correlation pairs come as one triangle; show the full matrix with a unit diagonal
+      const names = [...new Set([...ys, ...xs])]
+      const get = (a, b) => m.get(a + '\u0000' + b) ?? m.get(b + '\u0000' + a) ?? (a === b ? 1 : NaN)
+      return { xs: names, ys: names, get, valueName: v }
     }
     return { xs, ys, get: (a, b) => m.get(a + '\u0000' + b), valueName: v }
   }
@@ -33,7 +39,7 @@ export function matrixFrom(rows, x, y, value) {
 export default function Heatmap({ rows, x, y, value, diverging }) {
   const [ref, w] = useWidth()
   const [tip, setTip] = useState(null)
-  const { xs, ys, get, valueName } = matrixFrom(rows, x, y, value)
+  const { xs, ys, get, valueName } = matrixFrom(rows, x, y, value, !!diverging)
   const all = []
   ys.forEach((b) => xs.forEach((a) => { const v = get(a, b); if (Number.isFinite(v)) all.push(v) }))
   const min = Math.min(...all), max = Math.max(...all)

@@ -36,11 +36,11 @@ export default function HeroTrace() {
   const stepState = (i) => (phase >= (i === 0 ? 2 : 4) ? 'done' : phase >= (i === 0 ? 1 : 3) ? 'running' : 'pending')
 
   return (
-    <figure className="trace" aria-label="Example: a question answered by the analyst, from a recorded session">
+    <figure className="trace" aria-label="Example: a question answered by the analyst, from an illustrative example: real tool results, hand-written answer text">
       <div className="trace-bar">
         <span className="mono">{demo.dataset.name}</span>
         <span className="mono tnum">{fmtInt(demo.dataset.rows)} rows · {demo.dataset.columns} cols</span>
-        <span className="trace-rec">recorded</span>
+        <span className="trace-rec" title="Tool results are real; the answer text was written by hand to show the format">example</span>
       </div>
 
       <div className="trace-body">
@@ -89,7 +89,6 @@ export default function HeroTrace() {
           </button>
         </div>
       </div>
-      <p className="trace-time mono" aria-hidden="true">{s2 && `${s1.ms + s2.ms} ms in DuckDB`}</p>
     </figure>
   )
 }

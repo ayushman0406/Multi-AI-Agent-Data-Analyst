@@ -1,50 +1,126 @@
 {
  "recorded": true,
- "recorded_note": "Recorded example on a synthetic retail dataset. Numbers were computed from the rows by the same tools; nothing here is live.",
+ "recorded_note": "Every tool call and number was produced by the real analysis tools on samples/retail_orders.csv. The dataset description and the written answers were authored for this example, and one answer contains a deliberately unsupported figure so you can see the check flag it. Nothing here is live.",
  "session_id": "recorded-retail",
  "dataset": {
   "name": "retail_orders.csv",
-  "rows": 6258,
-  "columns": 8
+  "rows": 3000,
+  "columns": 10
  },
  "profile": {
-  "row_count": 6258,
-  "column_count": 8,
-  "duplicate_rows": 18,
+  "name": "Retail orders",
+  "row_count": 3000,
+  "column_count": 10,
+  "duplicate_rows": 0,
   "columns": [
+   {
+    "name": "order_id",
+    "dtype": "BIGINT",
+    "kind": "numeric",
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 3000,
+    "min": 100001.0,
+    "max": 103000.0,
+    "mean": 101500.5,
+    "median": 101500.5,
+    "stddev": 866.1697,
+    "histogram": [
+     {
+      "start": 100001.0,
+      "end": 100250.9167,
+      "count": 250
+     },
+     {
+      "start": 100250.9167,
+      "end": 100500.8333,
+      "count": 250
+     },
+     {
+      "start": 100500.8333,
+      "end": 100750.75,
+      "count": 250
+     },
+     {
+      "start": 100750.75,
+      "end": 101000.6667,
+      "count": 250
+     },
+     {
+      "start": 101000.6667,
+      "end": 101250.5833,
+      "count": 250
+     },
+     {
+      "start": 101250.5833,
+      "end": 101500.5,
+      "count": 250
+     },
+     {
+      "start": 101500.5,
+      "end": 101750.4167,
+      "count": 250
+     },
+     {
+      "start": 101750.4167,
+      "end": 102000.3333,
+      "count": 250
+     },
+     {
+      "start": 102000.3333,
+      "end": 102250.25,
+      "count": 250
+     },
+     {
+      "start": 102250.25,
+      "end": 102500.1667,
+      "count": 250
+     },
+     {
+      "start": 102500.1667,
+      "end": 102750.0833,
+      "count": 250
+     },
+     {
+      "start": 102750.0833,
+      "end": 103000.0,
+      "count": 250
+     }
+    ]
+   },
    {
     "name": "order_date",
     "dtype": "DATE",
     "kind": "datetime",
     "null_count": 0,
-    "null_pct": 0,
-    "distinct_count": 547,
-    "min": "2024-01-01",
-    "max": "2025-06-30"
+    "null_pct": 0.0,
+    "distinct_count": 544,
+    "min": "2025-01-01",
+    "max": "2026-06-30"
    },
    {
     "name": "region",
     "dtype": "VARCHAR",
     "kind": "categorical",
     "null_count": 0,
-    "null_pct": 0,
+    "null_pct": 0.0,
     "distinct_count": 4,
     "top_values": [
      {
-      "value": "East",
-      "count": 2198
-     },
-     {
       "value": "North",
-      "count": 1487
-     },
-     {
-      "value": "West",
-      "count": 1344
+      "count": 836
      },
      {
       "value": "South",
-      "count": 1229
+      "count": 746
+     },
+     {
+      "value": "West",
+      "count": 722
+     },
+     {
+      "value": "East",
+      "count": 696
      }
     ]
    },
@@ -53,28 +129,28 @@
     "dtype": "VARCHAR",
     "kind": "categorical",
     "null_count": 0,
-    "null_pct": 0,
+    "null_pct": 0.0,
     "distinct_count": 5,
     "top_values": [
      {
       "value": "Grocery",
-      "count": 1962
+      "count": 907
      },
      {
       "value": "Apparel",
-      "count": 1448
-     },
-     {
-      "value": "Home",
-      "count": 1198
+      "count": 730
      },
      {
       "value": "Electronics",
-      "count": 875
+      "count": 528
      },
      {
-      "value": "Toys",
-      "count": 775
+      "value": "Sports",
+      "count": 471
+     },
+     {
+      "value": "Furniture",
+      "count": 364
      }
     ]
    },
@@ -83,73 +159,73 @@
     "dtype": "BIGINT",
     "kind": "numeric",
     "null_count": 0,
-    "null_pct": 0,
-    "distinct_count": 11,
-    "min": 1,
-    "max": 11,
-    "mean": 4.3182,
-    "median": 3,
-    "stddev": 3.2854,
+    "null_pct": 0.0,
+    "distinct_count": 12,
+    "min": 1.0,
+    "max": 12.0,
+    "mean": 6.5397,
+    "median": 7.0,
+    "stddev": 3.4664,
     "histogram": [
      {
-      "bin_start": 1,
-      "bin_end": 1.8333,
-      "count": 1902
+      "start": 1.0,
+      "end": 1.9167,
+      "count": 241
      },
      {
-      "bin_start": 1.8333,
-      "bin_end": 2.6667,
-      "count": 769
+      "start": 1.9167,
+      "end": 2.8333,
+      "count": 266
      },
      {
-      "bin_start": 2.6667,
-      "bin_end": 3.5,
-      "count": 548
+      "start": 2.8333,
+      "end": 3.75,
+      "count": 255
      },
      {
-      "bin_start": 3.5,
-      "bin_end": 4.3333,
-      "count": 480
+      "start": 3.75,
+      "end": 4.6667,
+      "count": 233
      },
      {
-      "bin_start": 4.3333,
-      "bin_end": 5.1667,
-      "count": 403
+      "start": 4.6667,
+      "end": 5.5833,
+      "count": 236
      },
      {
-      "bin_start": 5.1667,
-      "bin_end": 6,
-      "count": 0
+      "start": 5.5833,
+      "end": 6.5,
+      "count": 239
      },
      {
-      "bin_start": 6,
-      "bin_end": 6.8333,
-      "count": 417
+      "start": 6.5,
+      "end": 7.4167,
+      "count": 247
      },
      {
-      "bin_start": 6.8333,
-      "bin_end": 7.6667,
-      "count": 364
+      "start": 7.4167,
+      "end": 8.3333,
+      "count": 262
      },
      {
-      "bin_start": 7.6667,
-      "bin_end": 8.5,
-      "count": 366
+      "start": 8.3333,
+      "end": 9.25,
+      "count": 260
      },
      {
-      "bin_start": 8.5,
-      "bin_end": 9.3333,
-      "count": 367
+      "start": 9.25,
+      "end": 10.1667,
+      "count": 258
      },
      {
-      "bin_start": 9.3333,
-      "bin_end": 10.1667,
-      "count": 339
+      "start": 10.1667,
+      "end": 11.0833,
+      "count": 246
      },
      {
-      "bin_start": 10.1667,
-      "bin_end": 11,
-      "count": 303
+      "start": 11.0833,
+      "end": 12.0,
+      "count": 257
      }
     ]
    },
@@ -158,73 +234,73 @@
     "dtype": "DOUBLE",
     "kind": "numeric",
     "null_count": 0,
-    "null_pct": 0,
-    "distinct_count": 4564,
-    "min": 3,
-    "max": 419.02,
-    "mean": 60.0882,
-    "median": 28.78,
-    "stddev": 77.9875,
+    "null_pct": 0.0,
+    "distinct_count": 2588,
+    "min": 2.73,
+    "max": 648.42,
+    "mean": 89.0369,
+    "median": 43.805,
+    "stddev": 103.8343,
     "histogram": [
      {
-      "bin_start": 3,
-      "bin_end": 37.6683,
-      "count": 3549
+      "start": 2.73,
+      "end": 56.5375,
+      "count": 1787
      },
      {
-      "bin_start": 37.6683,
-      "bin_end": 72.3367,
-      "count": 1115
+      "start": 56.5375,
+      "end": 110.345,
+      "count": 359
      },
      {
-      "bin_start": 72.3367,
-      "bin_end": 107.005,
-      "count": 666
+      "start": 110.345,
+      "end": 164.1525,
+      "count": 198
      },
      {
-      "bin_start": 107.005,
-      "bin_end": 141.6733,
-      "count": 364
+      "start": 164.1525,
+      "end": 217.96,
+      "count": 258
      },
      {
-      "bin_start": 141.6733,
-      "bin_end": 176.3417,
-      "count": 98
+      "start": 217.96,
+      "end": 271.7675,
+      "count": 173
      },
      {
-      "bin_start": 176.3417,
-      "bin_end": 211.01,
-      "count": 61
+      "start": 271.7675,
+      "end": 325.575,
+      "count": 102
      },
      {
-      "bin_start": 211.01,
-      "bin_end": 245.6783,
-      "count": 88
+      "start": 325.575,
+      "end": 379.3825,
+      "count": 69
      },
      {
-      "bin_start": 245.6783,
-      "bin_end": 280.3467,
-      "count": 67
+      "start": 379.3825,
+      "end": 433.19,
+      "count": 29
      },
      {
-      "bin_start": 280.3467,
-      "bin_end": 315.015,
-      "count": 63
+      "start": 433.19,
+      "end": 486.9975,
+      "count": 10
      },
      {
-      "bin_start": 315.015,
-      "bin_end": 349.6833,
-      "count": 55
+      "start": 486.9975,
+      "end": 540.805,
+      "count": 9
      },
      {
-      "bin_start": 349.6833,
-      "bin_end": 384.3517,
-      "count": 60
+      "start": 540.805,
+      "end": 594.6125,
+      "count": 2
      },
      {
-      "bin_start": 384.3517,
-      "bin_end": 419.02,
-      "count": 72
+      "start": 594.6125,
+      "end": 648.42,
+      "count": 4
      }
     ]
    },
@@ -232,149 +308,104 @@
     "name": "discount",
     "dtype": "DOUBLE",
     "kind": "numeric",
-    "null_count": 85,
-    "null_pct": 1.3583,
-    "distinct_count": 6,
-    "min": 0,
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 266,
+    "min": 0.0,
     "max": 0.3,
-    "mean": 0.0783,
-    "median": 0.05,
-    "stddev": 0.0879,
+    "mean": 0.0884,
+    "median": 0.076,
+    "stddev": 0.0596,
     "histogram": [
      {
-      "bin_start": 0,
-      "bin_end": 0.025,
-      "count": 2433
+      "start": 0.0,
+      "end": 0.025,
+      "count": 389
      },
      {
-      "bin_start": 0.025,
-      "bin_end": 0.05,
-      "count": 0
+      "start": 0.025,
+      "end": 0.05,
+      "count": 550
      },
      {
-      "bin_start": 0.05,
-      "bin_end": 0.075,
-      "count": 1167
+      "start": 0.05,
+      "end": 0.075,
+      "count": 536
      },
      {
-      "bin_start": 0.075,
-      "bin_end": 0.1,
-      "count": 0
+      "start": 0.075,
+      "end": 0.1,
+      "count": 403
      },
      {
-      "bin_start": 0.1,
-      "bin_end": 0.125,
-      "count": 976
+      "start": 0.1,
+      "end": 0.125,
+      "count": 335
      },
      {
-      "bin_start": 0.125,
-      "bin_end": 0.15,
-      "count": 0
+      "start": 0.125,
+      "end": 0.15,
+      "count": 293
      },
      {
-      "bin_start": 0.15,
-      "bin_end": 0.175,
-      "count": 646
+      "start": 0.15,
+      "end": 0.175,
+      "count": 214
      },
      {
-      "bin_start": 0.175,
-      "bin_end": 0.2,
-      "count": 0
+      "start": 0.175,
+      "end": 0.2,
+      "count": 134
      },
      {
-      "bin_start": 0.2,
-      "bin_end": 0.225,
-      "count": 545
+      "start": 0.2,
+      "end": 0.225,
+      "count": 61
      },
      {
-      "bin_start": 0.225,
-      "bin_end": 0.25,
-      "count": 0
+      "start": 0.225,
+      "end": 0.25,
+      "count": 44
      },
      {
-      "bin_start": 0.25,
-      "bin_end": 0.275,
-      "count": 0
+      "start": 0.25,
+      "end": 0.275,
+      "count": 18
      },
      {
-      "bin_start": 0.275,
-      "bin_end": 0.3,
-      "count": 406
+      "start": 0.275,
+      "end": 0.3,
+      "count": 23
      }
     ]
    },
    {
-    "name": "revenue",
-    "dtype": "DOUBLE",
-    "kind": "numeric",
+    "name": "customer_id",
+    "dtype": "VARCHAR",
+    "kind": "categorical",
     "null_count": 0,
-    "null_pct": 0,
-    "distinct_count": 5526,
-    "min": 2.21,
-    "max": 4307.27,
-    "mean": 242.9536,
-    "median": 89.29,
-    "stddev": 444.02,
-    "histogram": [
+    "null_pct": 0.0,
+    "distinct_count": 400,
+    "top_values": [
      {
-      "bin_start": 2.21,
-      "bin_end": 360.965,
-      "count": 5168
+      "value": "C0269",
+      "count": 20
      },
      {
-      "bin_start": 360.965,
-      "bin_end": 719.72,
-      "count": 583
+      "value": "C0053",
+      "count": 16
      },
      {
-      "bin_start": 719.72,
-      "bin_end": 1078.475,
-      "count": 221
+      "value": "C0139",
+      "count": 16
      },
      {
-      "bin_start": 1078.475,
-      "bin_end": 1437.23,
-      "count": 110
+      "value": "C0189",
+      "count": 16
      },
      {
-      "bin_start": 1437.23,
-      "bin_end": 1795.985,
-      "count": 48
-     },
-     {
-      "bin_start": 1795.985,
-      "bin_end": 2154.74,
-      "count": 43
-     },
-     {
-      "bin_start": 2154.74,
-      "bin_end": 2513.495,
-      "count": 27
-     },
-     {
-      "bin_start": 2513.495,
-      "bin_end": 2872.25,
-      "count": 18
-     },
-     {
-      "bin_start": 2872.25,
-      "bin_end": 3231.005,
-      "count": 19
-     },
-     {
-      "bin_start": 3231.005,
-      "bin_end": 3589.76,
-      "count": 13
-     },
-     {
-      "bin_start": 3589.76,
-      "bin_end": 3948.515,
-      "count": 6
-     },
-     {
-      "bin_start": 3948.515,
-      "bin_end": 4307.27,
-      "count": 2
+      "value": "C0273",
+      "count": 15
      }
     ]
    },
@@ -383,90 +414,177 @@
     "dtype": "BOOLEAN",
     "kind": "boolean",
     "null_count": 0,
-    "null_pct": 0,
+    "null_pct": 0.0,
     "distinct_count": 2,
     "top_values": [
      {
-      "value": false,
-      "count": 5820
+      "value": "false",
+      "count": 2812
      },
      {
-      "value": true,
-      "count": 438
+      "value": "true",
+      "count": 188
+     }
+    ]
+   },
+   {
+    "name": "revenue",
+    "dtype": "DOUBLE",
+    "kind": "numeric",
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 2926,
+    "min": 3.49,
+    "max": 5858.3,
+    "mean": 523.2767,
+    "median": 221.46,
+    "stddev": 736.7164,
+    "histogram": [
+     {
+      "start": 3.49,
+      "end": 491.3908,
+      "count": 2114
+     },
+     {
+      "start": 491.3908,
+      "end": 979.2917,
+      "count": 356
+     },
+     {
+      "start": 979.2917,
+      "end": 1467.1925,
+      "count": 205
+     },
+     {
+      "start": 1467.1925,
+      "end": 1955.0933,
+      "count": 136
+     },
+     {
+      "start": 1955.0933,
+      "end": 2442.9942,
+      "count": 88
+     },
+     {
+      "start": 2442.9942,
+      "end": 2930.895,
+      "count": 51
+     },
+     {
+      "start": 2930.895,
+      "end": 3418.7958,
+      "count": 21
+     },
+     {
+      "start": 3418.7958,
+      "end": 3906.6967,
+      "count": 13
+     },
+     {
+      "start": 3906.6967,
+      "end": 4394.5975,
+      "count": 10
+     },
+     {
+      "start": 4394.5975,
+      "end": 4882.4983,
+      "count": 2
+     },
+     {
+      "start": 4882.4983,
+      "end": 5370.3992,
+      "count": 2
+     },
+     {
+      "start": 5370.3992,
+      "end": 5858.3,
+      "count": 2
      }
     ]
    }
   ],
   "sample_rows": [
    {
-    "order_date": "2024-12-22",
-    "region": "East",
-    "category": "Electronics",
-    "units": 4,
-    "unit_price": 346.05,
-    "discount": 0,
-    "revenue": 1384.2,
-    "returned": false
+    "order_id": 100001,
+    "order_date": "2025-01-01",
+    "region": "North",
+    "category": "Sports",
+    "units": 6,
+    "unit_price": 36.97,
+    "discount": 0.053,
+    "customer_id": "C0053",
+    "returned": false,
+    "revenue": 210.06
    },
    {
-    "order_date": "2024-06-13",
-    "region": "East",
-    "category": "Toys",
-    "units": 8,
-    "unit_price": 9.18,
-    "discount": 0,
-    "revenue": 73.44,
-    "returned": false
-   },
-   {
-    "order_date": "2024-08-10",
-    "region": "East",
-    "category": "Grocery",
-    "units": 8,
-    "unit_price": 18.95,
-    "discount": 0,
-    "revenue": 151.6,
-    "returned": false
-   },
-   {
-    "order_date": "2024-10-23",
+    "order_id": 100002,
+    "order_date": "2025-01-01",
     "region": "West",
-    "category": "Toys",
-    "units": 3,
-    "unit_price": 36.88,
-    "discount": 0,
-    "revenue": 110.64,
-    "returned": false
+    "category": "Furniture",
+    "units": 11,
+    "unit_price": 272.48,
+    "discount": 0.177,
+    "customer_id": "C0220",
+    "returned": false,
+    "revenue": 2466.76
    },
    {
-    "order_date": "2024-03-03",
+    "order_id": 100003,
+    "order_date": "2025-01-02",
     "region": "East",
+    "category": "Apparel",
+    "units": 8,
+    "unit_price": 58.82,
+    "discount": 0.082,
+    "customer_id": "C0268",
+    "returned": false,
+    "revenue": 431.97
+   },
+   {
+    "order_id": 100004,
+    "order_date": "2025-01-02",
+    "region": "North",
     "category": "Grocery",
-    "units": 5,
-    "unit_price": 10.9,
-    "discount": 0.05,
-    "revenue": 51.78,
-    "returned": false
+    "units": 8,
+    "unit_price": 5.53,
+    "discount": 0.004,
+    "customer_id": "C0055",
+    "returned": false,
+    "revenue": 44.06
+   },
+   {
+    "order_id": 100005,
+    "order_date": "2025-01-02",
+    "region": "East",
+    "category": "Apparel",
+    "units": 3,
+    "unit_price": 35.52,
+    "discount": 0.121,
+    "customer_id": "C0150",
+    "returned": false,
+    "revenue": 93.67
    }
   ]
  },
  "understanding": {
-  "title": "Retail orders, Jan 2024 – Jun 2025",
+  "title": "Retail orders, 2025 to mid-2026",
   "domain": "Retail sales",
-  "summary": "One row per order line across 4 regions and 5 product categories, 2024-01-01 to 2025-06-30. Each row records units, unit price, the discount applied and the resulting revenue, plus whether the order was returned.",
+  "summary": "One row per order: 3,000 orders from 2025-01-01 to 2026-06-30 across 4 regions and 5 product categories. Each order records units, unit price, the discount given, the resulting revenue and whether it was returned.",
   "column_notes": {
-   "order_date": "Date the order was placed. Daily grain; use month or quarter for trends.",
-   "region": "Sales region. 4 values, East and West largest by revenue.",
-   "category": "Product category. 5 values; Grocery has the most orders but low prices.",
-   "units": "Units on the order line. Integer, right-skewed: most orders are 1–3 units.",
-   "unit_price": "List price per unit before discount. Wide range because Electronics sits far above the rest.",
-   "discount": "Fraction off list price (0.3 = 30%). 85 rows are missing a value.",
-   "revenue": "units × unit_price × (1 − discount). Already net of discount, not of returns.",
-   "returned": "True if the order line was returned."
+   "order_id": "Order number. Unique per row; an identifier, not a quantity.",
+   "order_date": "Day the order was placed. Use month or quarter for trends.",
+   "region": "Sales region, 4 values of similar size.",
+   "category": "Product category, 5 values. Electronics and Furniture carry the high prices.",
+   "units": "Units on the order. Whole numbers, most orders are small.",
+   "unit_price": "List price per unit before discount. Wide range across categories.",
+   "discount": "Fraction off list price (0.15 = 15%).",
+   "customer_id": "Customer code. Repeats across orders.",
+   "returned": "True when the order came back.",
+   "revenue": "units \u00d7 unit_price \u00d7 (1 \u2212 discount). Net of discount, not of returns."
   },
   "quality_notes": [
-   "18 rows are exact duplicates of another row; totals may be slightly overstated.",
-   "discount is empty in 85 rows (1.4%). Those rows still have revenue.",
+   "No empty values and no duplicate rows were found.",
+   "order_id is numeric but is an identifier; sums or averages of it mean nothing.",
    "revenue does not subtract returns; filter on returned = false for kept revenue."
   ],
   "suggested_questions": [
@@ -474,12 +592,12 @@
    "Do bigger discounts lead to more returns?",
    "What does a typical order look like in each category?",
    "Which months had unusually high or low revenue?",
-   "Are there any outlier orders by revenue?"
+   "Are there outlier orders by revenue?"
   ]
  },
  "turns": [
   {
-   "id": "t1",
+   "id": "rec1",
    "question": "Which region brings in the most revenue, and is it growing?",
    "plan": [
     {
@@ -487,8 +605,7 @@
      "args": {
       "by": "region",
       "metric": "revenue",
-      "agg": "sum",
-      "top": 10
+      "agg": "sum"
      },
      "why": "Rank regions by total revenue to find the largest."
     },
@@ -503,11 +620,11 @@
        {
         "column": "region",
         "op": "=",
-        "value": "East"
+        "value": "North"
        }
       ]
      },
-     "why": "Check whether East's quarterly revenue is rising or flat."
+     "why": "Check whether North's quarterly revenue is rising or flat."
     }
    ],
    "results": [
@@ -518,9 +635,9 @@
       "by": "region",
       "metric": "revenue",
       "agg": "sum",
-      "top": 10
+      "top": 10,
+      "filters": []
      },
-     "why": "Rank regions by total revenue to find the largest.",
      "ok": true,
      "result": {
       "tool": "group_aggregate",
@@ -528,33 +645,30 @@
        "by": "region",
        "metric": "revenue",
        "agg": "sum",
-       "top": 10
+       "top": 10,
+       "filters": []
       },
-      "title": "sum of revenue by region",
+      "title": "Sum of revenue by region",
       "data": [
        {
-        "region": "East",
-        "sum_revenue": 488417.61,
-        "orders": 2198,
-        "share_pct": 32.1242
-       },
-       {
-        "region": "West",
-        "sum_revenue": 373758.42,
-        "orders": 1344,
-        "share_pct": 24.5828
-       },
-       {
         "region": "North",
-        "sum_revenue": 352482.5,
-        "orders": 1487,
-        "share_pct": 23.1835
+        "sum_revenue": 417595.06,
+        "rows": 836
        },
        {
         "region": "South",
-        "sum_revenue": 305745.26,
-        "orders": 1229,
-        "share_pct": 20.1095
+        "sum_revenue": 399864.31,
+        "rows": 746
+       },
+       {
+        "region": "East",
+        "sum_revenue": 381062.1,
+        "rows": 696
+       },
+       {
+        "region": "West",
+        "sum_revenue": 371308.67,
+        "rows": 722
        }
       ],
       "chart": {
@@ -564,13 +678,15 @@
       },
       "summary": {
        "groups": 4,
-       "top_group": "East",
-       "top_value": 488417.61,
-       "top_share_pct": 32.1242,
-       "total": 1520403.79
+       "top_group": "North",
+       "top_value": 417595.06,
+       "bottom_shown_group": "West",
+       "bottom_shown_value": 371308.67,
+       "total": 1569830.14,
+       "top_share_pct": 26.6
       }
      },
-     "ms": 38
+     "ms": 3
     },
     {
      "index": 1,
@@ -584,11 +700,10 @@
        {
         "column": "region",
         "op": "=",
-        "value": "East"
+        "value": "North"
        }
       ]
      },
-     "why": "Check whether East's quarterly revenue is rising or flat.",
      "ok": true,
      "result": {
       "tool": "time_trend",
@@ -601,35 +716,41 @@
         {
          "column": "region",
          "op": "=",
-         "value": "East"
+         "value": "North"
         }
        ]
       },
-      "title": "revenue per quarter",
+      "title": "Sum of revenue per quarter (where region = North)",
       "data": [
        {
-        "period": "2024-Q1",
-        "sum_revenue": 65544.06
+        "period": "2025-01-01",
+        "sum_revenue": 58360.49,
+        "rows": 136
        },
        {
-        "period": "2024-Q2",
-        "sum_revenue": 62195.8
+        "period": "2025-04-01",
+        "sum_revenue": 70005.93,
+        "rows": 131
        },
        {
-        "period": "2024-Q3",
-        "sum_revenue": 88813.09
+        "period": "2025-07-01",
+        "sum_revenue": 70289.48,
+        "rows": 151
        },
        {
-        "period": "2024-Q4",
-        "sum_revenue": 77322.81
+        "period": "2025-10-01",
+        "sum_revenue": 54994.27,
+        "rows": 129
        },
        {
-        "period": "2025-Q1",
-        "sum_revenue": 85265.74
+        "period": "2026-01-01",
+        "sum_revenue": 76151.65,
+        "rows": 148
        },
        {
-        "period": "2025-Q2",
-        "sum_revenue": 109276.11
+        "period": "2026-04-01",
+        "sum_revenue": 87793.24,
+        "rows": 141
        }
       ],
       "chart": {
@@ -639,54 +760,59 @@
       },
       "summary": {
        "periods": 6,
-       "first_period": "2024-Q1",
-       "first_value": 65544.06,
-       "last_period": "2025-Q2",
-       "last_value": 109276.11,
-       "change_pct": 66.7216
+       "first_period": "2025-01-01",
+       "first_value": 58360.49,
+       "last_period": "2026-04-01",
+       "last_value": 87793.24,
+       "peak_period": "2026-04-01",
+       "peak_value": 87793.24,
+       "lowest_period": "2025-10-01",
+       "lowest_value": 54994.27,
+       "mean_per_period": 69599.1767,
+       "change_pct_first_to_last": 50.43
       }
      },
-     "ms": 52
+     "ms": 2
     }
    ],
-   "answer_md": "**East** is the largest region, with **$488,418** in revenue — **32.1%** of the total [1]. West is next at $373,758.\n\nIt is growing. Quarterly revenue in East went from $65,544 in 2024-Q1 to $109,276 in 2025-Q2, a change of **66.7%** [2].",
+   "answer_md": "**North** is the largest region, with **$417,595** in revenue, **26.6%** of the total [1]. South is close behind at $399,864.\n\nIt is growing. Quarterly revenue in North went from $58,360 in 2025-Q1 to $87,793 in 2026-Q2, a change of **50.4%** [2]. The latest quarter is also its best so far.",
    "key_numbers": [
     {
-     "label": "East revenue",
-     "value": "$488,418",
+     "label": "North revenue",
+     "value": "$417,595",
      "step": 1
     },
     {
-     "label": "Share of total",
-     "value": "32.1%",
+     "label": "Share of all revenue",
+     "value": "26.6%",
      "step": 1
     },
     {
-     "label": "Change 2024-Q1 → 2025-Q2",
-     "value": "+66.7%",
+     "label": "2025-Q1 to 2026-Q2",
+     "value": "+50.4%",
      "step": 2
     }
    ],
    "follow_ups": [
     "Now split that by category and leave out returned orders",
-    "Which categories are driving East's growth?",
+    "Which months were unusually strong for North?",
     "Do bigger discounts lead to more returns?"
    ],
    "ungrounded": [],
-   "total_numbers": 6,
    "grounded_count": 6,
-   "created_at": "2026-11-18T14:02:00.000Z",
-   "events": []
+   "total_numbers": 6,
+   "created_at": "2026-11-18T14:02:00+00:00",
+   "events": [],
+   "mode": "recorded"
   },
   {
-   "id": "t2",
+   "id": "rec2",
    "question": "Now split that by category and leave out returned orders",
    "plan": [
     {
-     "tool": "crosstab",
+     "tool": "group_aggregate",
      "args": {
-      "row": "region",
-      "col": "category",
+      "by": "category",
       "metric": "revenue",
       "agg": "sum",
       "filters": [
@@ -697,7 +823,7 @@
        }
       ]
      },
-     "why": "Same revenue view as before, broken out by category, excluding returned orders."
+     "why": "Same revenue view as before, broken out by category, on orders that were not returned."
     },
     {
      "tool": "group_aggregate",
@@ -714,186 +840,30 @@
        {
         "column": "region",
         "op": "=",
-        "value": "East"
+        "value": "North"
        }
       ]
      },
-     "why": "Rank categories inside East on kept orders only."
+     "why": "The same breakdown inside North only."
     }
    ],
    "results": [
     {
      "index": 0,
-     "tool": "crosstab",
-     "args": {
-      "row": "region",
-      "col": "category",
-      "metric": "revenue",
-      "agg": "sum",
-      "filters": [
-       {
-        "column": "returned",
-        "op": "=",
-        "value": false
-       }
-      ]
-     },
-     "why": "Same revenue view as before, broken out by category, excluding returned orders.",
-     "ok": true,
-     "result": {
-      "tool": "crosstab",
-      "args": {
-       "row": "region",
-       "col": "category",
-       "metric": "revenue",
-       "agg": "sum",
-       "filters": [
-        {
-         "column": "returned",
-         "op": "=",
-         "value": false
-        }
-       ]
-      },
-      "title": "sum of revenue by region × category",
-      "data": [
-       {
-        "region": "North",
-        "category": "Electronics",
-        "value": 147991.69
-       },
-       {
-        "region": "North",
-        "category": "Home",
-        "value": 71963.74
-       },
-       {
-        "region": "North",
-        "category": "Apparel",
-        "value": 53629.69
-       },
-       {
-        "region": "North",
-        "category": "Grocery",
-        "value": 22518.05
-       },
-       {
-        "region": "North",
-        "category": "Toys",
-        "value": 23940.13
-       },
-       {
-        "region": "South",
-        "category": "Electronics",
-        "value": 148881.09
-       },
-       {
-        "region": "South",
-        "category": "Home",
-        "value": 57236.86
-       },
-       {
-        "region": "South",
-        "category": "Apparel",
-        "value": 45378.07
-       },
-       {
-        "region": "South",
-        "category": "Grocery",
-        "value": 17614.32
-       },
-       {
-        "region": "South",
-        "category": "Toys",
-        "value": 19856.31
-       },
-       {
-        "region": "East",
-        "category": "Electronics",
-        "value": 226309.71
-       },
-       {
-        "region": "East",
-        "category": "Home",
-        "value": 92404.3
-       },
-       {
-        "region": "East",
-        "category": "Apparel",
-        "value": 74458.36
-       },
-       {
-        "region": "East",
-        "category": "Grocery",
-        "value": 35850.08
-       },
-       {
-        "region": "East",
-        "category": "Toys",
-        "value": 30607.11
-       },
-       {
-        "region": "West",
-        "category": "Electronics",
-        "value": 190632.58
-       },
-       {
-        "region": "West",
-        "category": "Home",
-        "value": 68901.06
-       },
-       {
-        "region": "West",
-        "category": "Apparel",
-        "value": 46727.68
-       },
-       {
-        "region": "West",
-        "category": "Grocery",
-        "value": 20025.78
-       },
-       {
-        "region": "West",
-        "category": "Toys",
-        "value": 20832.92
-       }
-      ],
-      "chart": {
-       "type": "heatmap",
-       "x": "category",
-       "y": "region",
-       "value": "value"
-      },
-      "summary": {
-       "cells": 20,
-       "max_cell": "East / Electronics",
-       "max_value": 226309.71,
-       "rows_used": 5820
-      }
-     },
-     "ms": 61
-    },
-    {
-     "index": 1,
      "tool": "group_aggregate",
      "args": {
       "by": "category",
       "metric": "revenue",
       "agg": "sum",
+      "top": 10,
       "filters": [
        {
         "column": "returned",
         "op": "=",
         "value": false
-       },
-       {
-        "column": "region",
-        "op": "=",
-        "value": "East"
        }
       ]
      },
-     "why": "Rank categories inside East on kept orders only.",
      "ok": true,
      "result": {
       "tool": "group_aggregate",
@@ -901,50 +871,41 @@
        "by": "category",
        "metric": "revenue",
        "agg": "sum",
+       "top": 10,
        "filters": [
         {
          "column": "returned",
          "op": "=",
          "value": false
-        },
-        {
-         "column": "region",
-         "op": "=",
-         "value": "East"
         }
        ]
       },
-      "title": "sum of revenue by category",
+      "title": "Sum of revenue by category (where returned = False)",
       "data": [
        {
         "category": "Electronics",
-        "sum_revenue": 226309.71,
-        "orders": 273,
-        "share_pct": 49.2374
+        "sum_revenue": 576899.95,
+        "rows": 502
        },
        {
-        "category": "Home",
-        "sum_revenue": 92404.3,
-        "orders": 372,
-        "share_pct": 20.1041
+        "category": "Furniture",
+        "sum_revenue": 539081.43,
+        "rows": 344
        },
        {
         "category": "Apparel",
-        "sum_revenue": 74458.36,
-        "orders": 480,
-        "share_pct": 16.1996
+        "sum_revenue": 162856.27,
+        "rows": 680
+       },
+       {
+        "category": "Sports",
+        "sum_revenue": 152856.33,
+        "rows": 437
        },
        {
         "category": "Grocery",
-        "sum_revenue": 35850.08,
-        "orders": 653,
-        "share_pct": 7.7998
-       },
-       {
-        "category": "Toys",
-        "sum_revenue": 30607.11,
-        "orders": 252,
-        "share_pct": 6.6591
+        "sum_revenue": 49956.84,
+        "rows": 849
        }
       ],
       "chart": {
@@ -955,161 +916,202 @@
       "summary": {
        "groups": 5,
        "top_group": "Electronics",
-       "top_value": 226309.71,
-       "top_share_pct": 49.2374,
-       "total": 459629.56
+       "top_value": 576899.95,
+       "bottom_shown_group": "Grocery",
+       "bottom_shown_value": 49956.84,
+       "total": 1481650.82,
+       "top_share_pct": 38.94
       }
      },
-     "ms": 34
+     "ms": 4
+    },
+    {
+     "index": 1,
+     "tool": "group_aggregate",
+     "args": {
+      "by": "category",
+      "metric": "revenue",
+      "agg": "sum",
+      "top": 10,
+      "filters": [
+       {
+        "column": "returned",
+        "op": "=",
+        "value": false
+       },
+       {
+        "column": "region",
+        "op": "=",
+        "value": "North"
+       }
+      ]
+     },
+     "ok": true,
+     "result": {
+      "tool": "group_aggregate",
+      "args": {
+       "by": "category",
+       "metric": "revenue",
+       "agg": "sum",
+       "top": 10,
+       "filters": [
+        {
+         "column": "returned",
+         "op": "=",
+         "value": false
+        },
+        {
+         "column": "region",
+         "op": "=",
+         "value": "North"
+        }
+       ]
+      },
+      "title": "Sum of revenue by category (where returned = False; region = North)",
+      "data": [
+       {
+        "category": "Electronics",
+        "sum_revenue": 154341.13,
+        "rows": 134
+       },
+       {
+        "category": "Furniture",
+        "sum_revenue": 131514.22,
+        "rows": 80
+       },
+       {
+        "category": "Apparel",
+        "sum_revenue": 46454.95,
+        "rows": 191
+       },
+       {
+        "category": "Sports",
+        "sum_revenue": 43594.39,
+        "rows": 117
+       },
+       {
+        "category": "Grocery",
+        "sum_revenue": 15936.24,
+        "rows": 256
+       }
+      ],
+      "chart": {
+       "type": "bar",
+       "x": "category",
+       "y": "sum_revenue"
+      },
+      "summary": {
+       "groups": 5,
+       "top_group": "Electronics",
+       "top_value": 154341.13,
+       "bottom_shown_group": "Grocery",
+       "bottom_shown_value": 15936.24,
+       "total": 391840.93,
+       "top_share_pct": 39.39
+      }
+     },
+     "ms": 4
     }
    ],
-   "answer_md": "With returned orders removed (5,820 orders kept), the biggest single cell is **East / Electronics** at **$226,310** [1].\n\nInside East, **Electronics** leads with $226,310, 49.2% of the region's kept revenue [2]. Home follows at $92,404. That is roughly 12% more concentrated than the company-wide mix.",
+   "answer_md": "With returned orders left out, **Electronics** is the largest category at **$576,900**, 38.9% of kept revenue [1].\n\nInside North the order is the same: Electronics leads with $154,341 (39.4%), then Furniture at $131,514 [2]. That is roughly 12% more concentrated than the company-wide mix.",
    "key_numbers": [
     {
-     "label": "Orders kept",
-     "value": "5,820",
+     "label": "Electronics, all regions",
+     "value": "$576,900",
      "step": 1
     },
     {
-     "label": "Top cell · East / Electronics",
-     "value": "$226,310",
-     "step": 1
+     "label": "Electronics share in North",
+     "value": "39.4%",
+     "step": 2
     },
     {
-     "label": "Electronics share in East",
-     "value": "49.2%",
+     "label": "Kept revenue, North",
+     "value": "$391,841",
      "step": 2
     }
    ],
    "follow_ups": [
-    "Show Electronics revenue per month in East",
-    "Which category has the highest return rate?",
-    "Compare average order size across regions"
+    "Do bigger discounts lead to more returns?",
+    "Show Electronics revenue per month",
+    "Which category has the highest return rate?"
    ],
    "ungrounded": [
-    12
+    12.0
    ],
-   "total_numbers": 6,
    "grounded_count": 5,
-   "created_at": "2026-11-18T14:03:35.000Z",
-   "events": []
+   "total_numbers": 6,
+   "created_at": "2026-11-18T14:03:35+00:00",
+   "events": [],
+   "mode": "recorded"
   },
   {
-   "id": "t3",
+   "id": "rec3",
    "question": "Do bigger discounts lead to more returns?",
    "plan": [
-    {
-     "tool": "group_aggregate",
-     "args": {
-      "by": "discount",
-      "metric": "returned",
-      "agg": "mean"
-     },
-     "why": "Return rate at each discount level."
-    },
     {
      "tool": "compare_groups",
      "args": {
       "by": "returned",
       "metric": "discount"
      },
-     "why": "Average discount on returned vs kept orders."
+     "why": "Average discount on returned orders against kept ones."
+    },
+    {
+     "tool": "compare_groups",
+     "args": {
+      "by": "region",
+      "metric": "discount"
+     },
+     "why": "Where discounts are deepest, to see what else differs."
+    },
+    {
+     "tool": "crosstab",
+     "args": {
+      "row": "region",
+      "col": "category",
+      "metric": "discount",
+      "agg": "mean"
+     },
+     "why": "Mean discount for every region and category pair."
     }
    ],
    "results": [
     {
      "index": 0,
-     "tool": "group_aggregate",
-     "args": {
-      "by": "discount",
-      "metric": "returned",
-      "agg": "mean"
-     },
-     "why": "Return rate at each discount level.",
-     "ok": true,
-     "result": {
-      "tool": "group_aggregate",
-      "args": {
-       "by": "discount",
-       "metric": "returned",
-       "agg": "mean"
-      },
-      "title": "return rate by discount level",
-      "data": [
-       {
-        "discount": 0,
-        "orders": 2433,
-        "return_rate_pct": 4.2335
-       },
-       {
-        "discount": 0.05,
-        "orders": 1167,
-        "return_rate_pct": 5.8269
-       },
-       {
-        "discount": 0.1,
-        "orders": 976,
-        "return_rate_pct": 7.8893
-       },
-       {
-        "discount": 0.15,
-        "orders": 646,
-        "return_rate_pct": 8.6687
-       },
-       {
-        "discount": 0.2,
-        "orders": 545,
-        "return_rate_pct": 10.4587
-       },
-       {
-        "discount": 0.3,
-        "orders": 406,
-        "return_rate_pct": 17.734
-       }
-      ],
-      "chart": {
-       "type": "bar",
-       "x": "discount",
-       "y": "return_rate_pct"
-      },
-      "summary": {
-       "levels": 6,
-       "lowest_rate_pct": 4.2335,
-       "highest_rate_pct": 17.734
-      }
-     },
-     "ms": 29
-    },
-    {
-     "index": 1,
      "tool": "compare_groups",
      "args": {
       "by": "returned",
-      "metric": "discount"
+      "metric": "discount",
+      "filters": []
      },
-     "why": "Average discount on returned vs kept orders.",
      "ok": true,
      "result": {
       "tool": "compare_groups",
       "args": {
        "by": "returned",
-       "metric": "discount"
+       "metric": "discount",
+       "filters": []
       },
       "title": "discount compared across returned",
       "data": [
        {
-        "returned": "false",
-        "count": 5740,
-        "mean": 0.0751,
-        "median": 0.05,
-        "std": 0.0858
+        "returned": false,
+        "count": 2812,
+        "mean": 0.0886,
+        "median": 0.076,
+        "std": 0.0599,
+        "min": 0.0,
+        "max": 0.3
        },
        {
-        "returned": "true",
-        "count": 433,
-        "mean": 0.1212,
-        "median": 0.1,
-        "std": 0.1031
+        "returned": true,
+        "count": 188,
+        "mean": 0.085,
+        "median": 0.0775,
+        "std": 0.0558,
+        "min": 0.003,
+        "max": 0.263
        }
       ],
       "chart": {
@@ -1118,44 +1120,261 @@
        "y": "mean"
       },
       "summary": {
-       "mean_false": 0.0751,
-       "mean_true": 0.1212
+       "groups": 2,
+       "overall_mean": 0.0884,
+       "rows": 3000,
+       "highest_group": false,
+       "highest_mean": 0.0886,
+       "lowest_group": true,
+       "lowest_mean": 0.085,
+       "gap": 0.0036,
+       "ratio_highest_to_lowest": 1.0424
       }
      },
-     "ms": 31
+     "ms": 5
+    },
+    {
+     "index": 1,
+     "tool": "compare_groups",
+     "args": {
+      "by": "region",
+      "metric": "discount",
+      "filters": []
+     },
+     "ok": true,
+     "result": {
+      "tool": "compare_groups",
+      "args": {
+       "by": "region",
+       "metric": "discount",
+       "filters": []
+      },
+      "title": "discount compared across region",
+      "data": [
+       {
+        "region": "West",
+        "count": 722,
+        "mean": 0.1525,
+        "median": 0.145,
+        "std": 0.0499,
+        "min": 0.058,
+        "max": 0.3
+       },
+       {
+        "region": "South",
+        "count": 746,
+        "mean": 0.0713,
+        "median": 0.061,
+        "std": 0.0488,
+        "min": 0.001,
+        "max": 0.3
+       },
+       {
+        "region": "East",
+        "count": 696,
+        "mean": 0.0684,
+        "median": 0.058,
+        "std": 0.0465,
+        "min": 0.001,
+        "max": 0.241
+       },
+       {
+        "region": "North",
+        "count": 836,
+        "mean": 0.065,
+        "median": 0.057,
+        "std": 0.0449,
+        "min": 0.0,
+        "max": 0.3
+       }
+      ],
+      "chart": {
+       "type": "bar",
+       "x": "region",
+       "y": "mean"
+      },
+      "summary": {
+       "groups": 4,
+       "overall_mean": 0.0884,
+       "rows": 3000,
+       "highest_group": "West",
+       "highest_mean": 0.1525,
+       "lowest_group": "North",
+       "lowest_mean": 0.065,
+       "gap": 0.0875,
+       "ratio_highest_to_lowest": 2.3462
+      }
+     },
+     "ms": 5
+    },
+    {
+     "index": 2,
+     "tool": "crosstab",
+     "args": {
+      "row": "region",
+      "col": "category",
+      "metric": "discount",
+      "agg": "mean"
+     },
+     "ok": true,
+     "result": {
+      "tool": "crosstab",
+      "args": {
+       "row": "region",
+       "col": "category",
+       "metric": "discount",
+       "agg": "mean"
+      },
+      "title": "Mean of discount by region x category",
+      "data": [
+       {
+        "region": "East",
+        "category": "Apparel",
+        "mean_discount": 0.0747
+       },
+       {
+        "region": "East",
+        "category": "Electronics",
+        "mean_discount": 0.0666
+       },
+       {
+        "region": "East",
+        "category": "Furniture",
+        "mean_discount": 0.0613
+       },
+       {
+        "region": "East",
+        "category": "Grocery",
+        "mean_discount": 0.0684
+       },
+       {
+        "region": "East",
+        "category": "Sports",
+        "mean_discount": 0.0676
+       },
+       {
+        "region": "North",
+        "category": "Apparel",
+        "mean_discount": 0.063
+       },
+       {
+        "region": "North",
+        "category": "Electronics",
+        "mean_discount": 0.0642
+       },
+       {
+        "region": "North",
+        "category": "Furniture",
+        "mean_discount": 0.0675
+       },
+       {
+        "region": "North",
+        "category": "Grocery",
+        "mean_discount": 0.0662
+       },
+       {
+        "region": "North",
+        "category": "Sports",
+        "mean_discount": 0.065
+       },
+       {
+        "region": "South",
+        "category": "Apparel",
+        "mean_discount": 0.0675
+       },
+       {
+        "region": "South",
+        "category": "Electronics",
+        "mean_discount": 0.0756
+       },
+       {
+        "region": "South",
+        "category": "Furniture",
+        "mean_discount": 0.0812
+       },
+       {
+        "region": "South",
+        "category": "Grocery",
+        "mean_discount": 0.0675
+       },
+       {
+        "region": "South",
+        "category": "Sports",
+        "mean_discount": 0.0719
+       },
+       {
+        "region": "West",
+        "category": "Apparel",
+        "mean_discount": 0.1561
+       },
+       {
+        "region": "West",
+        "category": "Electronics",
+        "mean_discount": 0.1508
+       },
+       {
+        "region": "West",
+        "category": "Furniture",
+        "mean_discount": 0.1528
+       },
+       {
+        "region": "West",
+        "category": "Grocery",
+        "mean_discount": 0.1521
+       },
+       {
+        "region": "West",
+        "category": "Sports",
+        "mean_discount": 0.1487
+       }
+      ],
+      "chart": {
+       "type": "heatmap",
+       "x": "category",
+       "y": "region",
+       "value": "mean_discount"
+      },
+      "summary": {
+       "cells": 20,
+       "row_values": 4,
+       "col_values": 5,
+       "max_cell": "West / Apparel",
+       "max_value": 0.1561,
+       "min_cell": "East / Furniture",
+       "min_value": 0.0613
+      }
+     },
+     "ms": 7
     }
    ],
-   "answer_md": "Yes — the return rate climbs with the discount. Orders with no discount come back **4.2%** of the time; at a 30% discount it is **17.7%** [1].\n\nReturned orders carried an average discount of 0.121, against 0.075 for orders that were kept [2]. This shows association, not cause: deeper discounts may be applied to products that are returned more for other reasons.",
+   "answer_md": "No, not in this data. Returned orders carried an average discount of **0.085**, slightly *lower* than the **0.089** on orders that were kept [1].\n\nWhat does stand out is where discounts are given. West averages 0.1525, 2.3 times North's 0.065 [2], and the deepest cell is West / Apparel at 0.1561 [3]. With only 188 returned orders, a small effect could still be hidden.",
    "key_numbers": [
     {
-     "label": "Return rate, no discount",
-     "value": "4.2%",
-     "step": 1
-    },
-    {
-     "label": "Return rate, 30% discount",
-     "value": "17.7%",
-     "step": 1
-    },
-    {
      "label": "Mean discount, returned",
-     "value": "0.121",
+     "value": 0.085,
+     "step": 1
+    },
+    {
+     "label": "Mean discount, kept",
+     "value": 0.0886,
+     "step": 1
+    },
+    {
+     "label": "West vs North",
+     "value": "2.3\u00d7",
      "step": 2
     }
    ],
    "follow_ups": [
-    "Is this true in every category?",
-    "How much revenue is lost to returns?"
+    "Why are discounts higher in West?",
+    "Which category has the highest return rate?"
    ],
    "ungrounded": [],
-   "total_numbers": 5,
-   "grounded_count": 5,
-   "created_at": "2026-11-18T14:05:10.000Z",
-   "events": []
+   "grounded_count": 7,
+   "total_numbers": 7,
+   "created_at": "2026-11-18T14:05:10+00:00",
+   "events": [],
+   "mode": "recorded"
   }
- ],
- "llm": {
-  "model": "recorded",
-  "base_url_host": "recorded"
- }
+ ]
 }

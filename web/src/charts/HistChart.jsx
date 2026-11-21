@@ -34,7 +34,7 @@ export default function HistChart({ rows, x, y }) {
 
   return (
     <div className="viz" ref={ref}>
-      <svg width={w} height={h} role="group" aria-label={`Histogram of ${humanize(x || 'values')}, ${bins.length} bins`}>
+      <svg width={w} height={h} role="group" aria-label={`Histogram, ${bins.length} bins from ${fmtNum(bins[0]?.lo)} to ${fmtNum(bins.at(-1)?.hi)}`}>
         {ticks.map((t) => (
           <g key={t}>
             <line x1={left} x2={w - right} y1={sy(t)} y2={sy(t)} className={t === 0 ? 'viz-axis' : 'viz-grid'} />

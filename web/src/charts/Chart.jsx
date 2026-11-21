@@ -29,7 +29,7 @@ export default function Chart({ result, title }) {
   let body
   try {
     body = view === 'chart' && Comp
-      ? <Comp rows={rows} x={x} y={y} series={series} value={value} diverging={result?.tool === 'correlation' ? true : undefined} />
+      ? <Comp rows={rows} x={x} y={y} series={series} value={value} grain={result?.args?.grain} diverging={result?.tool === 'correlation' ? true : undefined} />
       : <DataTable rows={rows} caption={caption} />
   } catch {
     body = <DataTable rows={rows} caption={caption} />

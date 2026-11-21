@@ -56,3 +56,15 @@ export function niceTicks(min, max, count = 5) {
   for (let v = lo; v <= hi + step / 2; v += step) ticks.push(Math.round(v / step) * step)
   return { lo, hi, ticks, step }
 }
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+/** Period labels from time_trend: '2025-04-01' + grain → '2025 Q2' / 'Apr 2025' / '2025'. */
+export function fmtPeriod(v, grain) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v))
+  if (!m) return String(v)
+  const [, y, mo, d] = m
+  if (grain === 'quarter') return `${y} Q${Math.floor((+mo - 1) / 3) + 1}`
+  if (grain === 'month') return `${MONTHS[+mo - 1]} ${y}`
+  if (grain === 'year') return y
+  return `${y}-${mo}-${d}`
+}

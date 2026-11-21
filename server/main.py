@@ -274,6 +274,8 @@ def read_settings() -> dict:
 
 @app.put("/api/settings")
 def write_settings(body: SettingsBody) -> dict:
+    if os.environ.get("ALLOW_RUNTIME_SETTINGS", "1").strip().lower() in ("0", "false", "no"):
+        raise HTTPException(403, "Runtime settings are disabled on this server")
     if body.base_url and not body.base_url.startswith(("http://", "https://")):
         raise HTTPException(400, "base_url must start with http:// or https://")
     set_overrides(api_key=body.api_key, base_url=body.base_url, model=body.model)

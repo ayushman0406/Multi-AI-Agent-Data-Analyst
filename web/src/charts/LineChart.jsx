@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import Tooltip from './Tooltip.jsx'
 import { useWidth, label, toNum, seriesColors, linear, truncate } from './util.js'
-import { fmtNum, fmtTick, niceTicks, humanize } from '../lib/format.js'
+import { fmtNum, fmtTick, niceTicks, humanize, fmtPeriod } from '../lib/format.js'
 
-export default function LineChart({ rows, x, y, series }) {
+export default function LineChart({ rows, x, y, series, grain }) {
   const [ref, w] = useWidth()
   const [hover, setHover] = useState(null)
 
@@ -30,7 +30,7 @@ export default function LineChart({ rows, x, y, series }) {
   const tipFor = (i) => {
     if (i === null) return null
     return {
-      x: sx(i), y: top + 40, title: xs[i],
+      x: sx(i), y: top + 40, title: fmtPeriod(xs[i], grain),
       rows: names.map((s) => ({ color: colors.get(s), value: fmtNum(cell.get(xs[i] + '\u0000' + s)), name: s })),
     }
   }
@@ -57,7 +57,7 @@ export default function LineChart({ rows, x, y, series }) {
       <svg
         width={w} height={h} tabIndex={0} className="viz-focusable"
         role="group"
-        aria-label={`Line chart of ${humanize(y)} over ${humanize(x)}, ${xs.length} points from ${xs[0]} to ${xs.at(-1)}. Use left and right arrow keys to read values.`}
+        aria-label={`Line chart of ${humanize(y)} over ${humanize(x)}, ${xs.length} points from ${fmtPeriod(xs[0], grain)} to ${fmtPeriod(xs.at(-1), grain)}. Use left and right arrow keys to read values.`}
         onPointerMove={onMove} onPointerLeave={() => setHover(null)} onKeyDown={onKey} onBlur={() => setHover(null)}
       >
         {ticks.map((t) => (
@@ -67,7 +67,7 @@ export default function LineChart({ rows, x, y, series }) {
           </g>
         ))}
         {xs.map((xv, i) => (i % every === 0 || i === xs.length - 1) && (i === xs.length - 1 || xs.length - 1 - i >= every * 0.6) ? (
-          <text key={xv} x={sx(i)} y={h - 8} className="viz-tick" textAnchor="middle">{truncate(xv, 10)}</text>
+          <text key={xv} x={sx(i)} y={h - 8} className="viz-tick" textAnchor={i === 0 && xs.length > 1 ? 'start' : i === xs.length - 1 && xs.length > 1 ? 'end' : 'middle'}>{truncate(fmtPeriod(xv, grain), 11)}</text>
         ) : null)}
         {names.map((s) => {
           const pts = xs.map((xv, i) => [sx(i), cell.get(xv + '\u0000' + s)]).filter((p) => Number.isFinite(p[1]))

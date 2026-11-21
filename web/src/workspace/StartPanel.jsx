@@ -73,8 +73,8 @@ export default function StartPanel({ serverUp, onOpen, onRecording, loading, err
         <div className="recorded-card">
           <h2 className="eyebrow">Or watch one first</h2>
           <button type="button" className="sample sample-recorded" onClick={onRecording} disabled={!!loading}>
-            <span className="sample-name"><PlayCircle size={16} aria-hidden="true" /> Recorded example: retail orders</span>
-            <span className="sample-desc">A saved session on synthetic retail data — three questions, replayed step by step. Nothing is computed live.</span>
+            <span className="sample-name"><PlayCircle size={16} aria-hidden="true" /> Example session: retail orders</span>
+            <span className="sample-desc">Three questions on the retail sample, replayed step by step. The tool results are real; the answer text was written by hand to show the format, and nothing is computed live.</span>
           </button>
         </div>
       </div>

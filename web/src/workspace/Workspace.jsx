@@ -66,17 +66,19 @@ export default function Workspace() {
   // bring a new question to the top of the view once; don't fight the reader while it streams
   const last = turns.at(-1)
   const lastId = last?.id
+  const userAsked = useRef(false)
   useEffect(() => {
-    if (!lastId) return
+    if (!lastId || !userAsked.current) return
     const el = document.getElementById(`${lastId}-q`)?.closest('article')
     el?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' })
   }, [lastId])
 
   const ask = async (q) => {
     setNotice(null)
+    userAsked.current = true
     const res = await s.ask(q)
     if (res?.reason === 'recorded') {
-      setNotice('This is a recording, so only the questions it contains can be replayed. Start the server to ask your own.')
+      setNotice('This is an example session, so only the questions it contains can be replayed. Start the server to ask your own.')
       return { ok: false }
     }
     return res
@@ -88,7 +90,7 @@ export default function Workspace() {
       const blob = new Blob([recordedReport(session, turns)], { type: 'text/markdown' })
       const a = document.createElement('a')
       a.href = URL.createObjectURL(blob)
-      a.download = 'recorded-example-report.md'
+      a.download = 'example-session-report.md'
       a.click()
       setTimeout(() => URL.revokeObjectURL(a.href), 1000)
     } else {
@@ -144,7 +146,7 @@ export default function Workspace() {
       {recorded ? (
         <div className="banner is-rec" role="note">
           <PlayCircle size={16} aria-hidden="true" />
-          <p><strong>Recorded example.</strong> {session.recording?.recorded_note || 'Replayed from a saved session; nothing here is computed live.'} {session.recording?.source === 'bundled' ? 'Loaded from a copy bundled with the page.' : ''}</p>
+          <p><strong>Example session.</strong> {session.recording?.recorded_note || 'Replayed from a saved session; nothing here is computed live.'} {session.recording?.source === 'server' ? 'Loaded from the server’s cached session.' : ''}</p>
         </div>
       ) : health.state === 'down' ? (
         <div className="banner is-warn" role="status">
@@ -170,7 +172,7 @@ export default function Workspace() {
                 {railOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
               </button>
             )}
-            {(railOpen || narrow) && <Brief session={session} onAsk={ask} disabled={s.busy} canAsk={canAsk} compact={narrow} />}
+            {(railOpen || narrow) && <Brief session={session} onAsk={ask} disabled={s.busy} canAsk={canAsk} compact={narrow} folded={narrow && turns.length > 0} key={narrow && turns.length > 0 ? 'folded' : 'open'} />}
           </aside>
 
           <main id="main" className="thread-col">
@@ -187,7 +189,7 @@ export default function Workspace() {
               ))}
               {recorded && nextRecorded && last?.status === 'done' && !last.follow_ups?.includes(nextRecorded.question) && (
                 <div className="follow">
-                  <h3 className="follow-h">Next in this recording</h3>
+                  <h3 className="follow-h">Next in this example</h3>
                   <ul className="chips"><li><button type="button" className="chip" onClick={() => ask(nextRecorded.question)}>{nextRecorded.question}</button></li></ul>
                 </div>
               )}
@@ -203,8 +205,8 @@ export default function Workspace() {
                 onStop={s.stop}
                 busy={s.busy}
                 disabled={recorded}
-                placeholder={recorded ? 'Recorded example — pick one of the suggested questions to replay it' : 'Ask about this dataset, or change the last analysis…'}
-                note={recorded ? <>Replays only. {recordedQs?.size} questions are in this recording.</> : undefined}
+                placeholder={recorded ? 'Example session — pick one of the suggested questions to replay it' : 'Ask about this dataset, or change the last analysis…'}
+                note={recorded ? <>Replays only. {recordedQs?.size} questions are in this example.</> : undefined}
               />
             </div>
           </main>

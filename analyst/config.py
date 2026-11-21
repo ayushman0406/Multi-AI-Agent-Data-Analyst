@@ -62,6 +62,12 @@ def get_settings() -> Settings:
     model = os.environ.get("LLM_MODEL") or DEFAULT_MODEL
     with _lock:
         ov = dict(_overrides)
+    # The server's own key is only ever sent to the endpoint it was configured for.
+    # If someone points the app at a different base URL without supplying a key,
+    # run without a key rather than leak the server's key to that host.
+    if "api_key" not in ov and ov.get("base_url"):
+        if urlparse(ov["base_url"]).netloc != urlparse(base_url).netloc:
+            api_key = ""
     return Settings(
         api_key=ov.get("api_key", api_key).strip(),
         base_url=(ov.get("base_url") or base_url).strip().rstrip("/"),

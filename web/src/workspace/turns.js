@@ -59,7 +59,8 @@ export function applyEvent(turn, { event, data }) {
   switch (event) {
     case 'plan': {
       const plan = planFrom(data)
-      return { ...turn, status: plan.length ? 'running' : 'answering', steps: plan.map((p, i) => ({ index: i, tool: p.tool, args: p.args || {}, why: p.why, status: 'pending' })) }
+      const dropped = Array.isArray(data?.dropped) ? data.dropped : []
+      return { ...turn, planMode: data?.mode, planNote: data?.note || null, dropped, status: plan.length ? 'running' : 'answering', steps: plan.map((p, i) => ({ index: i, tool: p.tool, args: p.args || {}, why: p.why, status: 'pending' })) }
     }
     case 'tool_start': {
       const steps = [...turn.steps]
@@ -88,7 +89,7 @@ export function applyEvent(turn, { event, data }) {
     case 'done': {
       if (data && typeof data === 'object' && (data.answer_md !== undefined || data.plan)) {
         const stored = turnFromStored(data.turn || data)
-        return { ...stored, id: turn.id, serverId: stored.id, recorded: turn.recorded, startedAt: turn.startedAt, finishedAt: Date.now() }
+        return { ...stored, id: turn.id, serverId: stored.id, planMode: turn.planMode, planNote: turn.planNote, dropped: turn.dropped, recorded: turn.recorded, startedAt: turn.startedAt, finishedAt: Date.now() }
       }
       if (data?.turn) return { ...turnFromStored(data.turn), id: turn.id, recorded: turn.recorded, startedAt: turn.startedAt, finishedAt: Date.now() }
       return { ...turn, status: 'done', ungrounded: turn.ungrounded ?? [], finishedAt: Date.now() }
