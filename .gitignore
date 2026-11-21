@@ -21,3 +21,11 @@ __pycache__/
 # OS
 .DS_Store
 Thumbs.db
+
+# Generated output / local state
+*_output.json
+comprehensive_report.*
+temp_*
+web/dist/
+.superpowers/
+.streamlit/secrets.toml
