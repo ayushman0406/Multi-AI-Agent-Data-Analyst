@@ -1,0 +1,1056 @@
+{
+ "session_id": "demo",
+ "dataset": {
+  "name": "Retail orders",
+  "rows": 3000,
+  "columns": 10
+ },
+ "profile": {
+  "name": "Retail orders",
+  "row_count": 3000,
+  "column_count": 10,
+  "duplicate_rows": 0,
+  "columns": [
+   {
+    "name": "order_id",
+    "dtype": "BIGINT",
+    "kind": "numeric",
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 3000,
+    "min": 100001.0,
+    "max": 103000.0,
+    "mean": 101500.5,
+    "median": 101500.5,
+    "stddev": 866.1697,
+    "histogram": [
+     {
+      "start": 100001.0,
+      "end": 100250.9167,
+      "count": 250
+     },
+     {
+      "start": 100250.9167,
+      "end": 100500.8333,
+      "count": 250
+     },
+     {
+      "start": 100500.8333,
+      "end": 100750.75,
+      "count": 250
+     },
+     {
+      "start": 100750.75,
+      "end": 101000.6667,
+      "count": 250
+     },
+     {
+      "start": 101000.6667,
+      "end": 101250.5833,
+      "count": 250
+     },
+     {
+      "start": 101250.5833,
+      "end": 101500.5,
+      "count": 250
+     },
+     {
+      "start": 101500.5,
+      "end": 101750.4167,
+      "count": 250
+     },
+     {
+      "start": 101750.4167,
+      "end": 102000.3333,
+      "count": 250
+     },
+     {
+      "start": 102000.3333,
+      "end": 102250.25,
+      "count": 250
+     },
+     {
+      "start": 102250.25,
+      "end": 102500.1667,
+      "count": 250
+     },
+     {
+      "start": 102500.1667,
+      "end": 102750.0833,
+      "count": 250
+     },
+     {
+      "start": 102750.0833,
+      "end": 103000.0,
+      "count": 250
+     }
+    ]
+   },
+   {
+    "name": "order_date",
+    "dtype": "DATE",
+    "kind": "datetime",
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 544,
+    "min": "2025-01-01",
+    "max": "2026-06-30"
+   },
+   {
+    "name": "region",
+    "dtype": "VARCHAR",
+    "kind": "categorical",
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 4,
+    "top_values": [
+     {
+      "value": "North",
+      "count": 836
+     },
+     {
+      "value": "South",
+      "count": 746
+     },
+     {
+      "value": "West",
+      "count": 722
+     },
+     {
+      "value": "East",
+      "count": 696
+     }
+    ]
+   },
+   {
+    "name": "category",
+    "dtype": "VARCHAR",
+    "kind": "categorical",
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 5,
+    "top_values": [
+     {
+      "value": "Grocery",
+      "count": 907
+     },
+     {
+      "value": "Apparel",
+      "count": 730
+     },
+     {
+      "value": "Electronics",
+      "count": 528
+     },
+     {
+      "value": "Sports",
+      "count": 471
+     },
+     {
+      "value": "Furniture",
+      "count": 364
+     }
+    ]
+   },
+   {
+    "name": "units",
+    "dtype": "BIGINT",
+    "kind": "numeric",
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 12,
+    "min": 1.0,
+    "max": 12.0,
+    "mean": 6.5397,
+    "median": 7.0,
+    "stddev": 3.4664,
+    "histogram": [
+     {
+      "start": 1.0,
+      "end": 1.9167,
+      "count": 241
+     },
+     {
+      "start": 1.9167,
+      "end": 2.8333,
+      "count": 266
+     },
+     {
+      "start": 2.8333,
+      "end": 3.75,
+      "count": 255
+     },
+     {
+      "start": 3.75,
+      "end": 4.6667,
+      "count": 233
+     },
+     {
+      "start": 4.6667,
+      "end": 5.5833,
+      "count": 236
+     },
+     {
+      "start": 5.5833,
+      "end": 6.5,
+      "count": 239
+     },
+     {
+      "start": 6.5,
+      "end": 7.4167,
+      "count": 247
+     },
+     {
+      "start": 7.4167,
+      "end": 8.3333,
+      "count": 262
+     },
+     {
+      "start": 8.3333,
+      "end": 9.25,
+      "count": 260
+     },
+     {
+      "start": 9.25,
+      "end": 10.1667,
+      "count": 258
+     },
+     {
+      "start": 10.1667,
+      "end": 11.0833,
+      "count": 246
+     },
+     {
+      "start": 11.0833,
+      "end": 12.0,
+      "count": 257
+     }
+    ]
+   },
+   {
+    "name": "unit_price",
+    "dtype": "DOUBLE",
+    "kind": "numeric",
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 2588,
+    "min": 2.73,
+    "max": 648.42,
+    "mean": 89.0369,
+    "median": 43.805,
+    "stddev": 103.8343,
+    "histogram": [
+     {
+      "start": 2.73,
+      "end": 56.5375,
+      "count": 1787
+     },
+     {
+      "start": 56.5375,
+      "end": 110.345,
+      "count": 359
+     },
+     {
+      "start": 110.345,
+      "end": 164.1525,
+      "count": 198
+     },
+     {
+      "start": 164.1525,
+      "end": 217.96,
+      "count": 258
+     },
+     {
+      "start": 217.96,
+      "end": 271.7675,
+      "count": 173
+     },
+     {
+      "start": 271.7675,
+      "end": 325.575,
+      "count": 102
+     },
+     {
+      "start": 325.575,
+      "end": 379.3825,
+      "count": 69
+     },
+     {
+      "start": 379.3825,
+      "end": 433.19,
+      "count": 29
+     },
+     {
+      "start": 433.19,
+      "end": 486.9975,
+      "count": 10
+     },
+     {
+      "start": 486.9975,
+      "end": 540.805,
+      "count": 9
+     },
+     {
+      "start": 540.805,
+      "end": 594.6125,
+      "count": 2
+     },
+     {
+      "start": 594.6125,
+      "end": 648.42,
+      "count": 4
+     }
+    ]
+   },
+   {
+    "name": "discount",
+    "dtype": "DOUBLE",
+    "kind": "numeric",
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 266,
+    "min": 0.0,
+    "max": 0.3,
+    "mean": 0.0884,
+    "median": 0.076,
+    "stddev": 0.0596,
+    "histogram": [
+     {
+      "start": 0.0,
+      "end": 0.025,
+      "count": 389
+     },
+     {
+      "start": 0.025,
+      "end": 0.05,
+      "count": 550
+     },
+     {
+      "start": 0.05,
+      "end": 0.075,
+      "count": 536
+     },
+     {
+      "start": 0.075,
+      "end": 0.1,
+      "count": 403
+     },
+     {
+      "start": 0.1,
+      "end": 0.125,
+      "count": 335
+     },
+     {
+      "start": 0.125,
+      "end": 0.15,
+      "count": 293
+     },
+     {
+      "start": 0.15,
+      "end": 0.175,
+      "count": 214
+     },
+     {
+      "start": 0.175,
+      "end": 0.2,
+      "count": 134
+     },
+     {
+      "start": 0.2,
+      "end": 0.225,
+      "count": 61
+     },
+     {
+      "start": 0.225,
+      "end": 0.25,
+      "count": 44
+     },
+     {
+      "start": 0.25,
+      "end": 0.275,
+      "count": 18
+     },
+     {
+      "start": 0.275,
+      "end": 0.3,
+      "count": 23
+     }
+    ]
+   },
+   {
+    "name": "customer_id",
+    "dtype": "VARCHAR",
+    "kind": "categorical",
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 400,
+    "top_values": [
+     {
+      "value": "C0269",
+      "count": 20
+     },
+     {
+      "value": "C0053",
+      "count": 16
+     },
+     {
+      "value": "C0139",
+      "count": 16
+     },
+     {
+      "value": "C0189",
+      "count": 16
+     },
+     {
+      "value": "C0273",
+      "count": 15
+     }
+    ]
+   },
+   {
+    "name": "returned",
+    "dtype": "BOOLEAN",
+    "kind": "boolean",
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 2,
+    "top_values": [
+     {
+      "value": "false",
+      "count": 2812
+     },
+     {
+      "value": "true",
+      "count": 188
+     }
+    ]
+   },
+   {
+    "name": "revenue",
+    "dtype": "DOUBLE",
+    "kind": "numeric",
+    "null_count": 0,
+    "null_pct": 0.0,
+    "distinct_count": 2926,
+    "min": 3.49,
+    "max": 5858.3,
+    "mean": 523.2767,
+    "median": 221.46,
+    "stddev": 736.7164,
+    "histogram": [
+     {
+      "start": 3.49,
+      "end": 491.3908,
+      "count": 2114
+     },
+     {
+      "start": 491.3908,
+      "end": 979.2917,
+      "count": 356
+     },
+     {
+      "start": 979.2917,
+      "end": 1467.1925,
+      "count": 205
+     },
+     {
+      "start": 1467.1925,
+      "end": 1955.0933,
+      "count": 136
+     },
+     {
+      "start": 1955.0933,
+      "end": 2442.9942,
+      "count": 88
+     },
+     {
+      "start": 2442.9942,
+      "end": 2930.895,
+      "count": 51
+     },
+     {
+      "start": 2930.895,
+      "end": 3418.7958,
+      "count": 21
+     },
+     {
+      "start": 3418.7958,
+      "end": 3906.6967,
+      "count": 13
+     },
+     {
+      "start": 3906.6967,
+      "end": 4394.5975,
+      "count": 10
+     },
+     {
+      "start": 4394.5975,
+      "end": 4882.4983,
+      "count": 2
+     },
+     {
+      "start": 4882.4983,
+      "end": 5370.3992,
+      "count": 2
+     },
+     {
+      "start": 5370.3992,
+      "end": 5858.3,
+      "count": 2
+     }
+    ]
+   }
+  ],
+  "sample_rows": [
+   {
+    "order_id": 100001,
+    "order_date": "2025-01-01",
+    "region": "North",
+    "category": "Sports",
+    "units": 6,
+    "unit_price": 36.97,
+    "discount": 0.053,
+    "customer_id": "C0053",
+    "returned": false,
+    "revenue": 210.06
+   },
+   {
+    "order_id": 100002,
+    "order_date": "2025-01-01",
+    "region": "West",
+    "category": "Furniture",
+    "units": 11,
+    "unit_price": 272.48,
+    "discount": 0.177,
+    "customer_id": "C0220",
+    "returned": false,
+    "revenue": 2466.76
+   },
+   {
+    "order_id": 100003,
+    "order_date": "2025-01-02",
+    "region": "East",
+    "category": "Apparel",
+    "units": 8,
+    "unit_price": 58.82,
+    "discount": 0.082,
+    "customer_id": "C0268",
+    "returned": false,
+    "revenue": 431.97
+   },
+   {
+    "order_id": 100004,
+    "order_date": "2025-01-02",
+    "region": "North",
+    "category": "Grocery",
+    "units": 8,
+    "unit_price": 5.53,
+    "discount": 0.004,
+    "customer_id": "C0055",
+    "returned": false,
+    "revenue": 44.06
+   },
+   {
+    "order_id": 100005,
+    "order_date": "2025-01-02",
+    "region": "East",
+    "category": "Apparel",
+    "units": 3,
+    "unit_price": 35.52,
+    "discount": 0.121,
+    "customer_id": "C0150",
+    "returned": false,
+    "revenue": 93.67
+   }
+  ]
+ },
+ "understanding": {
+  "title": "Retail orders",
+  "domain": "unknown",
+  "summary": "3000 rows x 10 columns: 5 numeric (order_id, units, unit_price, discount, revenue); 1 datetime (order_date); 3 categorical (region, category, customer_id); 1 boolean (returned). order_date spans 2025-01-01 to 2026-06-30. LLM not configured, so this brief only reports what was measured.",
+  "column_notes": {
+   "order_id": "numeric; range 100,001 to 103,000, mean 101,500, median 101,500.",
+   "order_date": "date/time; 2025-01-01 to 2026-06-30.",
+   "region": "categorical; 4 distinct values; most common: North (836), South (746), West (722).",
+   "category": "categorical; 5 distinct values; most common: Grocery (907), Apparel (730), Electronics (528).",
+   "units": "numeric; range 1 to 12, mean 6.54, median 7.",
+   "unit_price": "numeric; range 2.73 to 648.4, mean 89.04, median 43.8.",
+   "discount": "numeric; range 0 to 0.3, mean 0.0884, median 0.076.",
+   "customer_id": "categorical; 400 distinct values; most common: C0269 (20), C0053 (16), C0139 (16).",
+   "returned": "boolean; 2 distinct values; most common: false (2812), true (188).",
+   "revenue": "numeric; range 3.49 to 5,858, mean 523.3, median 221.5."
+  },
+  "quality_notes": [
+   "order_id: unique for every row (likely an identifier)."
+  ],
+  "suggested_questions": [
+   "Which region has the highest total revenue?",
+   "How does revenue change over time by month?",
+   "Compare unit_price across region",
+   "Are there outliers in revenue?",
+   "Which numeric columns are correlated?",
+   "What is the distribution of revenue?"
+  ],
+  "mode": "offline"
+ },
+ "turns": [
+  {
+   "id": "9383f61150",
+   "question": "Where are we losing margin?",
+   "plan": [
+    {
+     "tool": "group_aggregate",
+     "args": {
+      "by": "region",
+      "metric": "discount",
+      "agg": "mean"
+     },
+     "why": "discount by region"
+    },
+    {
+     "tool": "compare_groups",
+     "args": {
+      "by": "region",
+      "metric": "unit_price"
+     },
+     "why": "unit_price across region"
+    },
+    {
+     "tool": "time_trend",
+     "args": {
+      "date_col": "order_date",
+      "metric": "discount",
+      "agg": "mean",
+      "grain": "month"
+     },
+     "why": "discount per month"
+    },
+    {
+     "tool": "describe_column",
+     "args": {
+      "column": "returned"
+     },
+     "why": "overview of returned"
+    }
+   ],
+   "results": [
+    {
+     "index": 0,
+     "tool": "group_aggregate",
+     "args": {
+      "by": "region",
+      "metric": "discount",
+      "agg": "mean"
+     },
+     "ok": true,
+     "result": {
+      "tool": "group_aggregate",
+      "args": {
+       "by": "region",
+       "metric": "discount",
+       "agg": "mean",
+       "top": 10,
+       "filters": []
+      },
+      "title": "Mean of discount by region",
+      "data": [
+       {
+        "region": "West",
+        "mean_discount": 0.1525,
+        "rows": 722
+       },
+       {
+        "region": "South",
+        "mean_discount": 0.0713,
+        "rows": 746
+       },
+       {
+        "region": "East",
+        "mean_discount": 0.0684,
+        "rows": 696
+       },
+       {
+        "region": "North",
+        "mean_discount": 0.065,
+        "rows": 836
+       }
+      ],
+      "chart": {
+       "type": "bar",
+       "x": "region",
+       "y": "mean_discount"
+      },
+      "summary": {
+       "groups": 4,
+       "top_group": "West",
+       "top_value": 0.1525,
+       "bottom_shown_group": "North",
+       "bottom_shown_value": 0.065
+      }
+     },
+     "ms": 3
+    },
+    {
+     "index": 1,
+     "tool": "compare_groups",
+     "args": {
+      "by": "region",
+      "metric": "unit_price"
+     },
+     "ok": true,
+     "result": {
+      "tool": "compare_groups",
+      "args": {
+       "by": "region",
+       "metric": "unit_price",
+       "filters": []
+      },
+      "title": "unit_price compared across region",
+      "data": [
+       {
+        "region": "West",
+        "count": 722,
+        "mean": 92.4793,
+        "median": 47.335,
+        "std": 103.0032,
+        "min": 2.73,
+        "max": 584.13
+       },
+       {
+        "region": "East",
+        "count": 696,
+        "mean": 92.0342,
+        "median": 43.385,
+        "std": 107.5827,
+        "min": 3.75,
+        "max": 621.9
+       },
+       {
+        "region": "South",
+        "count": 746,
+        "mean": 89.5266,
+        "median": 44.665,
+        "std": 102.8384,
+        "min": 3.27,
+        "max": 611.76
+       },
+       {
+        "region": "North",
+        "count": 836,
+        "mean": 83.1317,
+        "median": 40.455,
+        "std": 102.1758,
+        "min": 3.56,
+        "max": 648.42
+       }
+      ],
+      "chart": {
+       "type": "bar",
+       "x": "region",
+       "y": "mean"
+      },
+      "summary": {
+       "groups": 4,
+       "overall_mean": 89.0369,
+       "rows": 3000,
+       "highest_group": "West",
+       "highest_mean": 92.4793,
+       "lowest_group": "North",
+       "lowest_mean": 83.1317,
+       "gap": 9.3476,
+       "ratio_highest_to_lowest": 1.1124
+      }
+     },
+     "ms": 3
+    },
+    {
+     "index": 2,
+     "tool": "time_trend",
+     "args": {
+      "date_col": "order_date",
+      "metric": "discount",
+      "agg": "mean",
+      "grain": "month"
+     },
+     "ok": true,
+     "result": {
+      "tool": "time_trend",
+      "args": {
+       "date_col": "order_date",
+       "metric": "discount",
+       "agg": "mean",
+       "grain": "month",
+       "filters": []
+      },
+      "title": "Mean of discount per month",
+      "data": [
+       {
+        "period": "2025-01-01",
+        "mean_discount": 0.0849,
+        "rows": 143
+       },
+       {
+        "period": "2025-02-01",
+        "mean_discount": 0.0941,
+        "rows": 150
+       },
+       {
+        "period": "2025-03-01",
+        "mean_discount": 0.0897,
+        "rows": 171
+       },
+       {
+        "period": "2025-04-01",
+        "mean_discount": 0.0924,
+        "rows": 169
+       },
+       {
+        "period": "2025-05-01",
+        "mean_discount": 0.0879,
+        "rows": 153
+       },
+       {
+        "period": "2025-06-01",
+        "mean_discount": 0.0838,
+        "rows": 181
+       },
+       {
+        "period": "2025-07-01",
+        "mean_discount": 0.0873,
+        "rows": 172
+       },
+       {
+        "period": "2025-08-01",
+        "mean_discount": 0.0858,
+        "rows": 179
+       },
+       {
+        "period": "2025-09-01",
+        "mean_discount": 0.0838,
+        "rows": 172
+       },
+       {
+        "period": "2025-10-01",
+        "mean_discount": 0.093,
+        "rows": 163
+       },
+       {
+        "period": "2025-11-01",
+        "mean_discount": 0.0903,
+        "rows": 160
+       },
+       {
+        "period": "2025-12-01",
+        "mean_discount": 0.0802,
+        "rows": 154
+       },
+       {
+        "period": "2026-01-01",
+        "mean_discount": 0.0872,
+        "rows": 169
+       },
+       {
+        "period": "2026-02-01",
+        "mean_discount": 0.0893,
+        "rows": 181
+       },
+       {
+        "period": "2026-03-01",
+        "mean_discount": 0.0901,
+        "rows": 183
+       },
+       {
+        "period": "2026-04-01",
+        "mean_discount": 0.0931,
+        "rows": 160
+       },
+       {
+        "period": "2026-05-01",
+        "mean_discount": 0.0921,
+        "rows": 176
+       },
+       {
+        "period": "2026-06-01",
+        "mean_discount": 0.086,
+        "rows": 164
+       }
+      ],
+      "chart": {
+       "type": "line",
+       "x": "period",
+       "y": "mean_discount"
+      },
+      "summary": {
+       "periods": 18,
+       "first_period": "2025-01-01",
+       "first_value": 0.0849,
+       "last_period": "2026-06-01",
+       "last_value": 0.086,
+       "peak_period": "2025-02-01",
+       "peak_value": 0.0941,
+       "lowest_period": "2025-12-01",
+       "lowest_value": 0.0802,
+       "mean_per_period": 0.0884,
+       "change_pct_first_to_last": 1.3
+      }
+     },
+     "ms": 2
+    },
+    {
+     "index": 3,
+     "tool": "describe_column",
+     "args": {
+      "column": "returned"
+     },
+     "ok": true,
+     "result": {
+      "tool": "describe_column",
+      "args": {
+       "column": "returned"
+      },
+      "title": "About returned",
+      "data": [
+       {
+        "returned": false,
+        "count": 2812,
+        "pct": 93.73
+       },
+       {
+        "returned": true,
+        "count": 188,
+        "pct": 6.27
+       }
+      ],
+      "chart": {
+       "type": "bar",
+       "x": "returned",
+       "y": "count"
+      },
+      "summary": {
+       "kind": "boolean",
+       "rows": 3000,
+       "non_null": 3000,
+       "nulls": 0,
+       "null_pct": 0.0,
+       "distinct_values": 2,
+       "top_value": false,
+       "top_count": 2812,
+       "top_pct": 93.73,
+       "shown_pct": 100.0
+      }
+     },
+     "ms": 4
+    }
+   ],
+   "answer_md": "_LLM not configured: showing the computed results without commentary._\n\n| Step | Result | Measure | Value |\n|---|---|---|---|\n| [1] | Mean of discount by region | groups | 4 |\n| [1] | Mean of discount by region | top_group | West |\n| [1] | Mean of discount by region | top_value | 0.1525 |\n| [1] | Mean of discount by region | bottom_shown_group | North |\n| [1] | Mean of discount by region | bottom_shown_value | 0.065 |\n| [2] | unit_price compared across region | groups | 4 |\n| [2] | unit_price compared across region | overall_mean | 89.04 |\n| [2] | unit_price compared across region | rows | 3000 |\n| [2] | unit_price compared across region | highest_group | West |\n| [2] | unit_price compared across region | highest_mean | 92.48 |\n| [2] | unit_price compared across region | lowest_group | North |\n| [2] | unit_price compared across region | lowest_mean | 83.13 |\n| [2] | unit_price compared across region | gap | 9.348 |\n| [2] | unit_price compared across region | ratio_highest_to_lowest | 1.112 |\n| [3] | Mean of discount per month | periods | 18 |\n| [3] | Mean of discount per month | first_period | 2025-01-01 |\n| [3] | Mean of discount per month | first_value | 0.0849 |\n| [3] | Mean of discount per month | last_period | 2026-06-01 |\n| [3] | Mean of discount per month | last_value | 0.086 |\n| [3] | Mean of discount per month | peak_period | 2025-02-01 |\n| [3] | Mean of discount per month | peak_value | 0.0941 |\n| [3] | Mean of discount per month | lowest_period | 2025-12-01 |\n| [3] | Mean of discount per month | lowest_value | 0.0802 |\n| [3] | Mean of discount per month | mean_per_period | 0.0884 |\n| [3] | Mean of discount per month | change_pct_first_to_last | 1.3 |\n| [4] | About returned | kind | boolean |\n| [4] | About returned | rows | 3000 |\n| [4] | About returned | non_null | 3000 |\n| [4] | About returned | nulls | 0 |\n| [4] | About returned | null_pct | 0 |\n| [4] | About returned | distinct_values | 2 |\n| [4] | About returned | top_value | False |\n| [4] | About returned | top_count | 2812 |\n| [4] | About returned | top_pct | 93.73 |\n| [4] | About returned | shown_pct | 100.00 |",
+   "key_numbers": [
+    {
+     "label": "Mean of discount by region: groups",
+     "value": 4,
+     "step": 1
+    },
+    {
+     "label": "Mean of discount by region: top_value",
+     "value": 0.1525,
+     "step": 1
+    },
+    {
+     "label": "Mean of discount by region: bottom_shown_value",
+     "value": 0.065,
+     "step": 1
+    },
+    {
+     "label": "unit_price compared across region: groups",
+     "value": 4,
+     "step": 2
+    }
+   ],
+   "follow_ups": [
+    "Which region has the highest total revenue?",
+    "How does revenue change over time by month?",
+    "Compare unit_price across region"
+   ],
+   "ungrounded": [],
+   "grounded_count": 20,
+   "total_numbers": 20,
+   "created_at": "2026-11-21T13:39:45+00:00",
+   "events": [
+    {
+     "event": "plan",
+     "ms": 4,
+     "mode": "offline"
+    },
+    {
+     "event": "tool_start",
+     "ms": 4,
+     "index": 0,
+     "tool": "group_aggregate"
+    },
+    {
+     "event": "tool_result",
+     "ms": 7,
+     "index": 0,
+     "tool": "group_aggregate",
+     "ok": true
+    },
+    {
+     "event": "tool_start",
+     "ms": 7,
+     "index": 1,
+     "tool": "compare_groups"
+    },
+    {
+     "event": "tool_result",
+     "ms": 11,
+     "index": 1,
+     "tool": "compare_groups",
+     "ok": true
+    },
+    {
+     "event": "tool_start",
+     "ms": 11,
+     "index": 2,
+     "tool": "time_trend"
+    },
+    {
+     "event": "tool_result",
+     "ms": 13,
+     "index": 2,
+     "tool": "time_trend",
+     "ok": true
+    },
+    {
+     "event": "tool_start",
+     "ms": 13,
+     "index": 3,
+     "tool": "describe_column"
+    },
+    {
+     "event": "tool_result",
+     "ms": 18,
+     "index": 3,
+     "tool": "describe_column",
+     "ok": true
+    },
+    {
+     "event": "answer",
+     "ms": 18,
+     "mode": "offline"
+    },
+    {
+     "event": "grounding",
+     "ms": 19
+    },
+    {
+     "event": "done",
+     "ms": 19
+    }
+   ],
+   "mode": "offline"
+  }
+ ],
+ "created_at": "2026-11-21T13:39:45+00:00",
+ "mode": "offline",
+ "model": null,
+ "sample_id": "retail_orders"
+}
