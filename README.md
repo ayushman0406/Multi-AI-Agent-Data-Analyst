@@ -1,175 +1,103 @@
-# 🌟 Multi-AI-Agent Data Analyst
-### Autonomous Enterprise Data Intelligence Website & Multi-Agent Platform
+# Multi-agent data analyst
 
-[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?logo=python&logoColor=white)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![React](https://img.shields.io/badge/React-18+-61DAFB?logo=react&logoColor=black)](https://reactjs.org)
-[![DuckDB](https://img.shields.io/badge/DuckDB-1.1+-FFF000?logo=duckdb&logoColor=black)](https://duckdb.org)
-[![Plotly](https://img.shields.io/badge/Plotly-Interactive-3F4F75?logo=plotly&logoColor=white)](https://plotly.com)
-[![Pydantic](https://img.shields.io/badge/Pydantic-v2-E92063?logo=pydantic&logoColor=white)](https://pydantic.dev)
+Give it a dataset. It works out what the data is, then answers your questions by running a fixed set of safe analysis tools. The reply can only quote numbers those tools computed, and a check flags any number it can't trace back.
 
-A luxury **Enterprise SaaS Product Website & Live Interactive Analytics Studio** powered by **6 specialized AI agents**, a zero-JVM **DuckDB + Pandas** columnar analytical engine, and a multi-provider LLM gateway (**Groq**, **OpenAI**, **Google Gemini**, **Ollama**, and **Offline Demo Mode**).
+![Workspace mid-conversation, with one analysis step expanded](docs/cover.png)
 
----
+## How it works
 
-## ⚡ Key Highlights & Architecture Upgrades
+```mermaid
+flowchart LR
+  A[CSV / Parquet / JSON / XLSX] --> B[Profile<br/>DuckDB]
+  B --> C[Understand<br/>LLM]
+  C --> Q{{Question or follow-up}}
+  Q --> D[Plan<br/>LLM picks tools]
+  D --> E[Run tools<br/>DuckDB]
+  E --> F[Answer<br/>LLM sees real results]
+  F --> G[Grounding check]
+  G --> Q
+```
 
-1. **Enterprise SaaS Website ("Midnight Luxe" Aesthetic)**:
-   - Complete product website with high-converting **Hero Section**, **6-Agent Deep Dive**, **DuckDB Engine Benchmarks**, **Interactive Live Studio**, **FAQ Accordion**, and **Luxury Footer**.
-   - Styled with frosted glassmorphism (`backdrop-filter: blur`), obsidian surfaces (`#080C14`), electric cyan and emerald glow accents, and Google Fonts (*Outfit* and *Inter*).
+1. **Profile.** DuckDB loads the file and measures every column: type, nulls, distinct values, min/max/mean/median, top values and a small histogram.
+2. **Understand.** One LLM call turns the profile into a short brief: what the dataset appears to be, what each column means, quality problems, and a few questions worth asking.
+3. **Plan.** For each question, a planner LLM picks up to five calls from a fixed registry of eleven tools. It sees the schema, the brief and the last few turns. Tool names or arguments that don't fit the schema are dropped before anything runs.
+4. **Run.** Each tool compiles to parameterised SQL with validated, quoted identifiers and returns rows, a chart spec and a few headline numbers.
+5. **Answer.** A second LLM call gets the question and the actual tool results as JSON. It answers first, cites steps as `[1]`, `[2]` and says so when the data can't answer the question.
+6. **Follow up.** The next question sees the previous turns, so you can change the analysis in place: "same but by month", "exclude the West region", "now compare returned vs not returned".
 
-2. **Zero-JVM High-Performance Engine (DuckDB + Pandas)**:
-   - **50x Faster Profiling**: Sub-second startup latency (< 0.08s) replacing heavy PySpark JVM overhead.
-   - **Zero Java Dependencies**: No JDK 8/11/17 installation or `JAVA_HOME` configuration needed.
-   - Handles CSV, Parquet, JSON, and Excel directly in-memory with vectorized SQL querying.
+Every step streams to the browser over server-sent events. You can open any step to see its arguments, its chart and its raw result.
 
-3. **100% Type-Safe Pydantic Structured Outputs**:
-   - Resolved legacy placeholder string bug where LLM text was discarded.
-   - All 6 agents output strictly validated, typed Pydantic models containing real mathematical insights, semantic roles, and strategic recommendations.
+## Why the tools are a fixed list
 
-4. **Multi-Provider LLM Gateway**:
-   - Native support for **Groq** (Llama 3.3 70B), **OpenAI** (GPT-4o, GPT-4o-mini), **Google Gemini** (Gemini 2.0 Flash/Pro), and **Ollama** (offline local models).
-   - Built-in **Intelligent Demo Mode** for testing all features without requiring an API key.
+The first version of this project ran `exec()` on whatever code was typed into a web form, so anyone with the URL could run code on the server. This version lets the model choose among eleven audited functions (`group_aggregate`, `time_trend`, `distribution`, `top_categories`, `correlation`, `outliers`, `compare_groups`, `crosstab`, `scatter`, `describe_column`, `filter_rows`), and no input from the model or the user is ever executed as code.
 
-5. **Real-time DAG Execution Stepper (SSE Streaming)**:
-   - Live visual workflow showing active agent execution, animated glowing telemetry nodes, execution timing, and error handling via Server-Sent Events (SSE).
+## Grounding check
 
-6. **Interactive Plotly Visual Analytics**:
-   - Dynamic bivariate scatter plots, correlation heatmaps, feature distribution histograms, and category breakdown charts with hover tooltips, zoom, and PNG downloads.
+After each answer, `analyst/grounding.py` pulls out every number in the text. It then looks for each one in the tool results and the profile, after rounding to two significant figures and treating 37% and 0.37 as the same number. Integers from 0 to 10, years, and numbers from your own question are left out. The UI shows "N of M numbers trace to a computed result" and highlights any that don't.
 
-7. **In-App "Chat with Your Analyst Team" Assistant**:
-   - Conversational AI drawer grounded directly in the ingested dataset's schema, statistics, and strategic recommendations.
+In the recorded example (`samples/retail_orders.cached.json`, "Where are we losing margin?", offline mode), 20 of 20 numbers trace to a computed result.
 
-8. **Multi-Format Boardroom Deliverables**:
-   - 1-Click exports for **GitHub-Flavored Markdown** (.md), standalone **Styled HTML Executive Report** (.html), and raw **JSON State Bundle** (.json).
+## Bring your own model
 
----
+The LLM client speaks the OpenAI-compatible chat API, so any compatible provider works. Set it in `.env` or in the workspace's settings drawer:
 
-## 🤖 The 6-Agent Collective
+| Variable | Default |
+|---|---|
+| `LLM_API_KEY` | falls back to `GROQ_API_KEY`, then `OPENAI_API_KEY` |
+| `LLM_BASE_URL` | `https://api.groq.com/openai/v1` |
+| `LLM_MODEL` | `openai/gpt-oss-120b` |
 
-| Agent | Purpose | Core Deliverables |
-| :--- | :--- | :--- |
-| **1. 📋 Dataset Description Agent** | Semantic data profiling & lineage | Domain classification, entity relationships, data dictionary, quality diagnostics |
-| **2. 🔍 Domain Patterns Agent** | Correlation & anomaly discovery | Pairwise Pearson matrix, multivariate patterns with confidence scoring, anomaly alerts |
-| **3. 📈 Interactive Visuals Agent** | Dynamic chart synthesis | Plotly heatmaps, distributions, scatter plots, and category breakdowns with business insights |
-| **4. ⚙️ Custom Analysis Agent** | Rigorous statistical hypothesis testing | D'Agostino normality test, Welch's t-test, and target key driver ranking |
-| **5. 🎯 Business Goals Agent** | Commercial KPI alignment | Strategic initiatives, monetization avenues, operational risk factors, priority action matrix |
-| **6. 📊 Comprehensive Report Agent** | Executive boardroom synthesis | C-suite summary, strategic recommendations with ROI estimates, Markdown & HTML reports |
+With no key, the app runs in **offline mode**. A keyword planner picks the tools, and the answer is a plain table of tool results marked "LLM not configured". It doesn't write prose it can't back up.
 
----
+## Run it locally
 
-## 🚀 Quick Start
-
-### 1. Prerequisites
-- Python 3.9 or higher
-- Node.js v18+ and npm
-
-### 2. Launch the Platform (Single Command)
+Python 3.12+ and Node 22.
 
 ```bash
-# Clone the repository
-git clone <repo-url>
-cd Multi-AI-Agent-Data-Analyst
-
-# Run the unified launcher
-./run.sh
+pip install -r requirements.txt
 ```
-
-The application will build the production frontend and start the platform at **`http://localhost:8000`** with interactive API docs at **`http://localhost:8000/docs`**.
-
-### 3. Development Mode (Live Reloading)
-
-To run the Vite dev server with Hot Module Replacement (HMR) and the FastAPI backend concurrently:
 
 ```bash
-./run.sh --dev
+cp .env.example .env
 ```
-- **Website (Vite Dev Server)**: `http://localhost:5173`
-- **Backend API**: `http://localhost:8000`
-
----
-
-## 🔧 Environment & Model Configuration
-
-Create a `.env` file or use the in-app **Settings Modal** (gear icon in the top right navbar):
 
 ```bash
-# Optional: Provide API keys for live LLM reasoning (or use Demo Mode / Ollama)
-GROQ_API_KEY="gsk_..."
-OPENAI_API_KEY="sk-..."
-GEMINI_API_KEY="AIzaSy..."
+cd web && npm install && npm run build && cd ..
 ```
-
----
-
-## 🧪 Testing
-
-Run the automated test suite covering the data engine, pipeline DAG, and backend endpoints:
 
 ```bash
-.venv/bin/pytest tests/
+uvicorn server.main:app --port 8000
 ```
 
----
+Open http://localhost:8000. For frontend development, run `npm run dev` in `web/` (it proxies `/api` to port 8000).
 
-## 📁 Repository Structure
+## Tests
 
-```
-Multi-AI-Agent-Data-Analyst/
-├── backend/
-│   ├── __init__.py
-│   └── main.py                     # FastAPI backend (REST, SSE streaming, file upload, export)
-├── engine/
-│   ├── __init__.py
-│   └── data_engine.py              # DuckDB + Pandas vectorized profiling & SQL engine
-├── models/
-│   ├── __init__.py
-│   └── schemas.py                  # Pydantic models for structured agent outputs & AnalysisState
-├── llm/
-│   ├── __init__.py
-│   └── llm_gateway.py              # Multi-provider gateway (Groq, OpenAI, Gemini, Ollama, Mock)
-├── pipeline/
-│   ├── __init__.py
-│   └── orchestrator.py             # DAG pipeline coordinator with telemetry callbacks
-│
-# Specialized AI Agents
-├── generate_dataset_description_agent.py
-├── analyze_domain_specific_patterns_agent.py
-├── generate_visualizations_agent.py
-├── execute_custom_analysis_agent.py
-├── define_business_goals_agent.py
-├── generate_comprehensive_report_agent.py
-│
-# Enterprise SaaS Frontend (React + Vite)
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── website/            # HeroSection, AgentSuite, Benchmarks, Faq, Footer
-│   │   │   ├── tabs/               # 6 Agent Studio inspection tabs
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── DatasetUploader.jsx
-│   │   │   ├── PipelineStepper.jsx
-│   │   │   ├── AgentStudio.jsx
-│   │   │   ├── DataChatDrawer.jsx
-│   │   │   └── SettingsModal.jsx
-│   │   ├── App.jsx
-│   │   ├── index.css               # Midnight Luxe Design System tokens
-│   │   └── main.jsx
-│   ├── index.html
-│   └── vite.config.js
-│
-├── sample_data/
-│   └── heart_disease.csv           # Benchmark sample dataset
-├── tests/
-│   ├── conftest.py
-│   ├── test_data_engine.py
-│   ├── test_pipeline.py
-│   └── test_backend_api.py
-├── requirements.txt                # Python backend dependencies
-└── run.sh                          # Unified execution launcher
+```bash
+pytest -q
 ```
 
----
+The tests cover the LLM wrapper, profiling, every tool (including SQL-injection attempts in filters), grounding, multi-turn sessions and the HTTP/SSE API. A fake LLM stands in for the provider, so the suite needs no network.
 
-## 📄 License
-Apache-2.0. Built for modern enterprise data science and analytics teams.
+## Layout
+
+```
+analyst/   config, llm (the only file importing an SDK), data, tools, grounding, agents, session
+server/    FastAPI app: REST + SSE, serves web/dist
+web/       React + Vite frontend (landing page and /app workspace)
+samples/   sample datasets, generator script, recorded example
+tests/
+```
+
+## Limits
+
+- Data is held in memory, and sessions sit in an in-process store that keeps the 20 most recent. Uploads are capped at 25 MB and tables at 200,000 rows by default (`MAX_UPLOAD_MB`, `MAX_ROWS`).
+- One table per session; no joins across files.
+- The grounding check confirms that a number exists in the results. It can't tell whether the sentence around it describes that number correctly, so the model can still word a finding badly.
+- Free-tier LLM providers rate-limit. Every question uses two LLM calls (plan and answer), and the dataset brief uses one.
+
+## Data sources
+
+- **Palmer penguins**: Horst, Hill & Gorman (2020), the palmerpenguins package; data by Dr. Kristen Gorman and Palmer Station LTER. CC0.
+- **Heart disease (excerpt)**: 65 rows of the UCI Heart Disease (Cleveland) data as redistributed on Kaggle.
+- **Retail orders**: synthetic, generated by `samples/make_retail.py` (seed 7).
