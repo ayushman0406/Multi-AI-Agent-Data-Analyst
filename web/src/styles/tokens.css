@@ -1,0 +1,62 @@
+:root {
+  color-scheme: light;
+  /* colour — see DESIGN.md for roles */
+  --paper: #FBFAF7;
+  --surface: #FFFFFF;
+  --paper-2: #F3F1EB;
+  --ink: #141412;
+  --ink-2: #4A4944;
+  --ink-3: #6F6D66;
+  --rule: #E5E2DA;
+  --rule-2: #CFCBC0;
+  --accent: #0A7D55;
+  --accent-ink: #075E41;
+  --accent-wash: #E6F2EC;
+  --warn: #9A4A06;
+  --warn-wash: #FCEFD9;
+  --warn-line: #D98A1E;
+  --error: #B42318;
+  --error-wash: #FDECEA;
+
+  /* chart palette (validated, adjacent pairs) */
+  --series-1: #0A7D55;
+  --series-2: #2A78D6;
+  --series-3: #EB6834;
+  --series-4: #6250D6;
+  --series-5: #EDA100;
+  --series-6: #E87BA4;
+  --grid: #ECE9E2;
+  --axis: #CFCBC0;
+  --div-neg: #2A78D6;
+  --div-mid: #EFEDE7;
+  --div-pos: #D4571F;
+
+  /* type */
+  --f-display: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+  --f-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --t-xs: 0.75rem;
+  --t-sm: 0.875rem;
+  --t-base: 1rem;
+  --t-md: 1.125rem;
+  --t-lg: 1.375rem;
+  --t-xl: 2rem;
+  --t-2xl: clamp(2.25rem, 4.4vw, 3rem);
+  --t-3xl: clamp(2.75rem, 6.6vw, 5.75rem);
+
+  /* space */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+  --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 144px;
+  --page: 1240px;
+  --read: 720px;
+  --rail: 340px;
+  --gutter: clamp(16px, 4vw, 40px);
+
+  /* shape */
+  --r-1: 4px;
+  --r-2: 8px;
+  --r-pill: 999px;
+  --shadow-pop: 0 1px 2px rgba(20, 20, 18, 0.06), 0 8px 28px rgba(20, 20, 18, 0.10);
+
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+}
