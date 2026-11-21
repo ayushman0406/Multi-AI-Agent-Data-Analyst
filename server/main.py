@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+from urllib.parse import quote
 import tempfile
 import threading
 from collections import OrderedDict
@@ -32,6 +33,67 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+class BodySizeLimit:
+    """Reject request bodies over MAX_UPLOAD_MB while they stream in, before multipart parsing
+    spools them to disk. Covers both a declared Content-Length and chunked bodies."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http" or scope.get("method") not in ("POST", "PUT", "PATCH"):
+            return await self.app(scope, receive, send)
+        limit = get_settings().max_upload_bytes + 64 * 1024  # room for multipart framing
+        declared = dict(scope.get("headers") or []).get(b"content-length")
+        if declared is not None and declared.isdigit() and int(declared) > limit:
+            return await self._reject(send)
+        seen = 0
+        state = {"too_large": False, "started": False}
+
+        async def guarded_receive():
+            nonlocal seen
+            msg = await receive()
+            if msg["type"] == "http.request":
+                seen += len(msg.get("body", b""))
+                if seen > limit:
+                    state["too_large"] = True
+                    raise _TooLarge()  # stop reading; parsers may turn this into a 400, fixed up below
+            return msg
+
+        async def guarded_send(msg):
+            if state["too_large"]:
+                # replace whatever error response the app produced with a single 413
+                if msg["type"] == "http.response.start" and not state["started"]:
+                    state["started"] = True
+                    await self._reject(send)
+                return
+            if msg["type"] == "http.response.start":
+                state["started"] = True
+            await send(msg)
+
+        try:
+            await self.app(scope, guarded_receive, guarded_send)
+        except _TooLarge:
+            pass
+        if state["too_large"] and not state["started"]:
+            await self._reject(send)
+
+    @staticmethod
+    async def _reject(send):
+        mb = get_settings().max_upload_mb
+        body = json.dumps({"detail": f"File too large (max {mb} MB)"}).encode()
+        await send({"type": "http.response.start", "status": 413,
+                    "headers": [(b"content-type", b"application/json"), (b"content-length", str(len(body)).encode())]})
+        await send({"type": "http.response.body", "body": body})
+
+
+class _TooLarge(Exception):
+    pass
+
+
+app.add_middleware(BodySizeLimit)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -251,9 +313,12 @@ def ask(sid: str, body: AskBody) -> StreamingResponse:
 @app.get("/api/sessions/{sid}/report.md")
 def report(sid: str) -> PlainTextResponse:
     s = sessions.get(sid)
-    fname = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in s.name)[:60] or "report"
+    ascii_name = "".join(ch if (ch.isascii() and ch.isalnum()) or ch in "-_" else "_" for ch in s.name)[:60]
+    ascii_name = ascii_name.strip("_") or "dataset"
+    utf8_name = quote(f"{s.name[:60]}-report.md", safe="")
+    disposition = f"attachment; filename=\"{ascii_name}-report.md\"; filename*=UTF-8''{utf8_name}"
     return PlainTextResponse(s.report_md(), media_type="text/markdown; charset=utf-8",
-                             headers={"Content-Disposition": f'attachment; filename="{fname}-report.md"'})
+                             headers={"Content-Disposition": disposition})
 
 
 class SettingsBody(BaseModel):

@@ -57,7 +57,7 @@ def _int_arg(value: Any, arg: str, default: int, lo: int, hi: int) -> int:
         return default
     try:
         v = int(float(value))
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         raise ToolError(f"Argument '{arg}' must be an integer, got {value!r}")
     return max(lo, min(hi, v))
 
@@ -236,10 +236,13 @@ def time_trend(ds: Dataset, date_col: str, metric: str | None = None, agg: str =
     qd = quote_ident(date_col)
     where = _and(where, f"{qd} IS NOT NULL")
     sql = (f"SELECT CAST(date_trunc('{grain}', {qd}) AS DATE) AS period, {expr} AS val, COUNT(*) AS n "
-           f"FROM data{where} GROUP BY 1 ORDER BY 1 LIMIT 1000")
-    rows = _q(ds, sql, params)
-    data = [{"period": r["period"], label: r["val"], "rows": r["n"]} for r in rows]
+           f"FROM data{where} GROUP BY 1 ORDER BY 1")
+    rows = _q(ds, sql, params)  # one row per period; summary uses every period
+    shown = rows[-1000:]  # chart/data keeps the most recent 1000 periods
+    data = [{"period": r["period"], label: r["val"], "rows": r["n"]} for r in shown]
     summary: dict[str, Any] = {"periods": len(rows)}
+    if len(shown) < len(rows):
+        summary["periods_shown"] = len(shown)
     vals = [r["val"] for r in rows if r["val"] is not None]
     if rows and vals:
         nonnull = [r for r in rows if r["val"] is not None]
@@ -280,7 +283,7 @@ def distribution(ds: Dataset, column: str, bins: int = 20, filters: list | None 
         nb = bins if hi > lo else 1
         width = (hi - lo) / nb if hi > lo else 1.0
         counts = {r["b"]: r["n"] for r in _q(
-            ds, f"SELECT LEAST(CAST(FLOOR(({d} - ?) / ?) AS BIGINT), {nb - 1}) AS b, COUNT(*) AS n "
+            ds, f"SELECT GREATEST(LEAST(CAST(FLOOR(({d} - ?) / ?) AS BIGINT), {nb - 1}), 0) AS b, COUNT(*) AS n "
                 f"FROM data{where} GROUP BY 1", [lo, width] + list(params))}
         data = [{"bin_start": lo + i * width, "bin_end": lo + (i + 1) * width, "count": counts.get(i, 0)}
                 for i in range(nb)]
@@ -385,13 +388,16 @@ def compare_groups(ds: Dataset, by: str, metric: str, filters: list | None = Non
     where, params = compile_filters(k, flt)
     qb, d = quote_ident(by), f"CAST({quote_ident(metric)} AS DOUBLE)"
     sql = (f"SELECT {qb} AS grp, COUNT(*) AS n, AVG({d}) AS mean, MEDIAN({d}) AS median, STDDEV_SAMP({d}) AS std, "
-           f"MIN({d}) AS min, MAX({d}) AS max FROM data{where} GROUP BY 1 ORDER BY mean DESC NULLS LAST, grp LIMIT 25")
-    rows = _q(ds, sql, params)
+           f"MIN({d}) AS min, MAX({d}) AS max FROM data{where} GROUP BY 1 ORDER BY mean DESC NULLS LAST, grp")
+    all_rows = _q(ds, sql, params)
+    rows = all_rows[:25]
     overall = _q(ds, f"SELECT AVG({d}) AS mean, COUNT(*) AS n FROM data{where}", params)[0]
     data = [{by: r["grp"], "count": r["n"], "mean": r["mean"], "median": r["median"], "std": r["std"],
              "min": r["min"], "max": r["max"]} for r in rows]
-    summary: dict[str, Any] = {"groups": len(rows), "overall_mean": overall["mean"], "rows": overall["n"]}
-    valid = [r for r in rows if r["mean"] is not None]
+    summary: dict[str, Any] = {"groups": len(all_rows), "overall_mean": overall["mean"], "rows": overall["n"]}
+    if len(rows) < len(all_rows):
+        summary["groups_shown"] = len(rows)
+    valid = [r for r in all_rows if r["mean"] is not None]
     if valid:
         hi, lo = valid[0], valid[-1]
         summary.update({"highest_group": hi["grp"], "highest_mean": hi["mean"],

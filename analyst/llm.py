@@ -90,6 +90,8 @@ class LLM:
             raise LLMUnavailable(f"LLM endpoint error: {exc.__class__.__name__}: {exc}") from exc
         except openai.APIError as exc:
             raise LLMUnavailable(f"LLM endpoint error: {exc}") from exc
+        if not getattr(resp, "choices", None):
+            raise LLMUnavailable("LLM returned no choices")
         return resp.choices[0].message.content or ""
 
     # -- public API ----------------------------------------------------------------------------
@@ -104,22 +106,31 @@ class LLM:
             raise ValueError("ask() needs `user` or `messages`")
         return out
 
+    def _safe_complete(self, messages: list[dict], json_mode: bool) -> str:
+        """Run one completion; any provider/transport failure becomes LLMUnavailable so callers can fall back."""
+        try:
+            return self._complete(messages, json_mode)
+        except LLMUnavailable:
+            raise
+        except Exception as exc:  # retry errors, malformed responses, SDK bugs
+            raise LLMUnavailable(f"LLM call failed: {exc.__class__.__name__}: {exc}") from exc
+
     def ask(self, system: str, user: str | None = None, messages: list[dict] | None = None) -> str:
         if not self.available:
             raise LLMUnavailable("No LLM API key configured (set LLM_API_KEY).")
-        return self._complete(self._messages(system, user, messages), json_mode=False).strip()
+        return self._safe_complete(self._messages(system, user, messages), json_mode=False).strip()
 
     def ask_json(self, system: str, user: str | None = None, messages: list[dict] | None = None) -> dict:
         if not self.available:
             raise LLMUnavailable("No LLM API key configured (set LLM_API_KEY).")
         msgs = self._messages(system, user, messages)
-        raw = self._complete(msgs, json_mode=True)
+        raw = self._safe_complete(msgs, json_mode=True)
         try:
             return parse_json(raw)
         except (json.JSONDecodeError, ValueError):
             pass
         retry = msgs + [{"role": "assistant", "content": raw}, {"role": "user", "content": RETRY_HINT}]
-        raw2 = self._complete(retry, json_mode=True)
+        raw2 = self._safe_complete(retry, json_mode=True)
         try:
             return parse_json(raw2)
         except (json.JSONDecodeError, ValueError) as exc:

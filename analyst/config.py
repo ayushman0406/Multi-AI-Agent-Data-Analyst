@@ -62,19 +62,33 @@ def get_settings() -> Settings:
     model = os.environ.get("LLM_MODEL") or DEFAULT_MODEL
     with _lock:
         ov = dict(_overrides)
-    # The server's own key is only ever sent to the endpoint it was configured for.
-    # If someone points the app at a different base URL without supplying a key,
-    # run without a key rather than leak the server's key to that host.
-    if "api_key" not in ov and ov.get("base_url"):
-        if urlparse(ov["base_url"]).netloc != urlparse(base_url).netloc:
-            api_key = ""
+    # A key is only sent to the endpoint (scheme + host) it was configured for, and never over plain http
+    # to a remote host. Changing the base URL afterwards drops the key instead of leaking it.
+    if "api_key" in ov:
+        api_key, key_origin = ov["api_key"], ov.get("api_key_origin", _origin(base_url))
+    else:
+        key_origin = _origin(base_url)
+    effective_url = (ov.get("base_url") or base_url).strip().rstrip("/")
+    runtime_url = bool(ov.get("base_url"))  # URLs from the operator's env are trusted as configured
+    if _origin(effective_url) != key_origin or (runtime_url and not _secure(effective_url)):
+        api_key = ""
     return Settings(
-        api_key=ov.get("api_key", api_key).strip(),
+        api_key=api_key.strip(),
         base_url=(ov.get("base_url") or base_url).strip().rstrip("/"),
         model=(ov.get("model") or model).strip(),
         max_rows=_int_env("MAX_ROWS", 200_000),
         max_upload_mb=_int_env("MAX_UPLOAD_MB", 25),
     )
+
+
+def _origin(url: str) -> str:
+    u = urlparse(url.strip())
+    return f"{u.scheme}://{u.netloc}".lower()
+
+
+def _secure(url: str) -> bool:
+    u = urlparse(url.strip())
+    return u.scheme == "https" or (u.hostname or "") in ("localhost", "127.0.0.1", "::1")
 
 
 def set_overrides(api_key: str | None = None, base_url: str | None = None, model: str | None = None) -> None:
@@ -87,6 +101,12 @@ def set_overrides(api_key: str | None = None, base_url: str | None = None, model
                 _overrides.pop(key, None)
             else:
                 _overrides[key] = value
+        if api_key == "":
+            _overrides.pop("api_key_origin", None)
+        elif api_key:
+            # bind the key to the endpoint in effect when it was entered
+            base = _overrides.get("base_url") or os.environ.get("LLM_BASE_URL") or DEFAULT_BASE_URL
+            _overrides["api_key_origin"] = _origin(base)
 
 
 def clear_overrides() -> None:
