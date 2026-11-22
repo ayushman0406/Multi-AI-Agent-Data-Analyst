@@ -127,7 +127,7 @@ export default function Workspace() {
         )}
         <div className="ws-bar-right">
           <span className={`model-pill${recorded ? ' is-rec' : offline || !serverUp ? ' is-off' : ''}`} title={llm?.base_url_host || ''}>
-            {recorded ? 'recorded' : health.state === 'checking' ? 'connecting…' : !serverUp ? 'server offline' : llm?.configured ? llm.model : 'offline mode'}
+            {recorded ? 'example' : health.state === 'checking' ? 'connecting…' : !serverUp ? 'server offline' : llm?.configured ? llm.model : 'offline mode'}
           </span>
           {session && (
             <>
